@@ -103,18 +103,21 @@ then FOLDER must be set to 2.
 
 PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-1080p-60fps'.
 "
-  (let ((dur (int-to-string duration))
-				(dir (int-to-string (or folder -1)))
-				(producer (dom-node 'producer
-                            `((id . ,id) (out . ,(1- duration)) (in . 0))))
-        (properties (or producer-properties
-                        kdenlive-producer-image-properties-hd-1080p-60fps)))
-		(--each properties
-			(dom-append-child producer (kdenlive-property (car it) (cdr it))))
-		(--each `(("resource" . ,resource) ("length" . ,dur)
-							("kdenlive:duration" . ,dur) ("kdenlive:folderid" . ,dir))
-			(dom-append-child producer (kdenlive-property (car it) (cdr it))))
-		producer))
+  (let* ((id-string (int-to-string id))
+         (dur (int-to-string duration))
+         (out-string (int-to-string (1- duration)))
+         (dir (int-to-string (or folder -1)))
+         (producer (dom-node 'producer
+                             `((id . ,id-string) (out . ,out-string) (in . "0"))))
+         (properties (or producer-properties
+                         kdenlive-producer-image-properties-hd-1080p-60fps)))
+    (--each properties
+      (dom-append-child producer (kdenlive-property (car it) (cdr it))))
+    (--each `(("resource" . ,resource) ("length" . ,dur)
+              ("kdenlive:duration" . ,dur) ("kdenlive:folderid" . ,dir))
+      (dom-append-child producer (kdenlive-property (car it) (cdr it))))
+    producer))
+
 
 (defun kdenlive-mlt (root kdenlive-mlt-alist)
   "Return the mlt `dom-node' of a kdenlive project with the caracteristics
@@ -163,14 +166,14 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 
 (comment ; kdenlive-producer-image, kdenlive-property
  (dom-print
-	(kdenlive-producer-image 2 60 "/absolute/path/to/image.svg" nil '(("tony" . "jim")))) ; <producer id=2 out=59 in=0><property name="tony">jim</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
+  (kdenlive-producer-image 2 60 "/absolute/path/to/image.svg" nil '(("tony" . "jim")))) ; <producer id="2" out="59" in="0"><property name="tony">jim</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
  (dom-print
-	(kdenlive-producer-image 2 60 "/absolute/path/to/image.svg")) ; <producer id=2 out=59 in=0><property name="eof">pause</property><property name="ttl">25</property><property name="aspect_ratio">1</property><property name="progressive">1</property><property name="seekable">1</property><property name="loop">1</property><property name="mlt_service">pixbuf</property><property name="meta.media.width">1920</property><property name="meta.media.height">1080</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
+  (kdenlive-producer-image 2 60 "/absolute/path/to/image.svg")) ; <producer id="2" out="59" in="0"><property name="eof">pause</property><property name="ttl">25</property><property name="aspect_ratio">1</property><property name="progressive">1</property><property name="seekable">1</property><property name="loop">1</property><property name="mlt_service">pixbuf</property><property name="meta.media.width">1920</property><property name="meta.media.height">1080</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
  (dom-print
-	(kdenlive-producer-image 2 60 "/absolute/path/to/image.svg" 3)
-	t)
+  (kdenlive-producer-image 2 60 "/absolute/path/to/image.svg" 3)
+  t)
 
- ;; <producer id=2 out=59 in=0>
+ ;; <producer id="2" out="59" in="0">
  ;; <property name="eof">pause</property>
  ;; <property name="ttl">25</property>
  ;; <property name="aspect_ratio">1</property>
@@ -187,13 +190,13 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  ;; </producer>
 
  (dom-print (dom-append-child (dom-node 'producer '((id . 1) (out . 60) (in . 0)))
-															(kdenlive-property "length" "60")))
+                              (kdenlive-property "length" "60")))
  (dom-print
-	(let ((producer (dom-node 'producer '((id . 1) (out . 60) (in . 0)))))
-		(--each '(("test" . "11") ("test2" . "22"))
-			(dom-append-child producer
-												(kdenlive-property (car it) (cdr it))))
-		producer))
+  (let ((producer (dom-node 'producer '((id . 1) (out . 60) (in . 0)))))
+    (--each '(("test" . "11") ("test2" . "22"))
+      (dom-append-child producer
+                        (kdenlive-property (car it) (cdr it))))
+    producer))
  (dom-print (kdenlive-property "length" "60")) ; <property name="length">60</property>
  )
 
