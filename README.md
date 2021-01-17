@@ -16,10 +16,11 @@ I'm using [kdenlive](https://kdenlive.org/en/) to edit Inside Emacs
 videos.
 
 After [Inside Emacs #6 (part 5)](https://www.youtube.com/watch?v=w4wxGOijyZs),
-I decided to automate the editing part of the videos with `kdenlive`.
+I decided to automate the `kdenlive` editing part of the videos with `emacs`.
 
 When you work with GUI `kdenlive`, anything you do (with the mouse)
-and you save is saved in a `.kdenlive` ([kdenlive project file format](https://kdenlive.org/en/project/kdenlive-project-file-format/))
+and you save is saved in a `.kdenlive` file
+([kdenlive project file format](https://kdenlive.org/en/project/kdenlive-project-file-format/))
 that is a `xml` file that follows the [mlt xml format](https://www.mltframework.org/docs/mltxml/)
 with some custom xml attributes namespaced by `kdenlive:`.
 
@@ -31,8 +32,9 @@ with the common parts and settings.  And then, working with GUI
 can generate `.kdenlive` files.
 
 I know that `kdenlive` is already at version `20.12`, but `kdenlive.el`
-generate `.kdenlive` compatible with the version `17.12.3`.  See the
-top comments in the `kdenlive.el` file for more details.
+generate `.kdenlive` files compatible with the version `17.12.3`.
+See the top comments in the [kdenlive.el](./kdenlive/kdenlive.el)
+file for more details.
 
 # License
 
