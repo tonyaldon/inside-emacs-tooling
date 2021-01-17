@@ -84,13 +84,13 @@ we produce it by this function call:
   (kdenlive-property \"length\" \"60\")."
   (dom-node 'property `((name . ,name)) child))
 
-(defun kdenlive-producer-image (resource duration id &optional folder producer-properties)
+(defun kdenlive-producer-image (id duration resource &optional folder producer-properties)
   "Return a producer node for the image RESOURCE.
 
+ID is a identifier number use in the mlt kdenlive dom to identify a producer.
 RESOURCE is the absolute path to the image.
 DURATION is the number of frames.  For instance, for a 60fps videos,
 an image that last 5 secondes has a DURATION equal to 300 (* 60 5).
-ID is a number use in the mlt kdenlive dom.
 
 FOLDER is a number that refer in the mlt kdenlive dom
 to the folder the image belongs to in your kdenlive GUI interface.
@@ -163,11 +163,11 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 
 (comment ; kdenlive-producer-image, kdenlive-property
  (dom-print
-	(kdenlive-producer-image "/absolute/path/to/image.svg" 60 2 nil '(("tony" . "jim")))) ; <producer id=2 out=59 in=0><property name="tony">jim</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
+	(kdenlive-producer-image 2 60 "/absolute/path/to/image.svg" nil '(("tony" . "jim")))) ; <producer id=2 out=59 in=0><property name="tony">jim</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
  (dom-print
-	(kdenlive-producer-image "/absolute/path/to/image.svg" 60 2)) ; <producer id=2 out=59 in=0><property name="eof">pause</property><property name="ttl">25</property><property name="aspect_ratio">1</property><property name="progressive">1</property><property name="seekable">1</property><property name="loop">1</property><property name="mlt_service">pixbuf</property><property name="meta.media.width">1920</property><property name="meta.media.height">1080</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
+	(kdenlive-producer-image 2 60 "/absolute/path/to/image.svg")) ; <producer id=2 out=59 in=0><property name="eof">pause</property><property name="ttl">25</property><property name="aspect_ratio">1</property><property name="progressive">1</property><property name="seekable">1</property><property name="loop">1</property><property name="mlt_service">pixbuf</property><property name="meta.media.width">1920</property><property name="meta.media.height">1080</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
  (dom-print
-	(kdenlive-producer-image "/absolute/path/to/image.svg" 60 2 3)
+	(kdenlive-producer-image 2 60 "/absolute/path/to/image.svg" 3)
 	t)
 
  ;; <producer id=2 out=59 in=0>
