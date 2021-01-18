@@ -146,6 +146,31 @@ PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-108
       (dom-append-child producer (kdenlive-property (car it) (cdr it))))
     producer))
 
+(defvar kdenlive-producer-black-hd-1080p-60fps
+  '(("length" . "15000")
+		("eof" . "pause")
+		("resource" . "black")
+		("aspect_ratio" . "0")
+		("mlt_service" . "colour")
+		("set.test_audio" . "0"))
+  "Alist of default property names and values (\"name\" . \"value\") for
+the \"black\" producer 1920x1080 pixels and the video edited at 60fps.
+
+This is a special mandatory producer kdenlive always needs.  It is used
+by the playlist \"black_track\".  And the playlist \"black_track\" must
+appear first (first child) in the special \"tractor\" node \"maintractor\".")
+
+(defun kdenlive-producer-black (out)
+  "Return the producer node \"black\".
+
+See `kdenlive-producer-black-hd-1080p-60fps'."
+  (let* ((out-string (int-to-string out))
+				 (producer (dom-node 'producer
+                             `((id . "black") (out . ,out-string) (in . "0")))))
+		(--each kdenlive-producer-black-hd-1080p-60fps
+			(dom-append-child producer (kdenlive-property (car it) (cdr it))))
+		producer))
+
 (defun kdenlive-entry (id duration)
   "Return an \"entry\" node aimed to be a child of the node \"playlist\"
 with id \"main bin\".
@@ -244,7 +269,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 
 ;;;; kdenlive
 
-(comment ; kdenlive-producer-image, kdenlive-property
+(comment ; kdenlive-producer-image, kdenlive-property, kdenlive-producer-black
  (dom-print
   (kdenlive-producer-image 2 60 "/absolute/path/to/image.svg" nil '(("tony" . "jim")))) ; <producer id="2" out="59" in="0"><property name="tony">jim</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
  (dom-print
@@ -278,6 +303,8 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
                         (kdenlive-property (car it) (cdr it))))
     producer))
  (dom-print (kdenlive-property "length" "60")) ; <property name="length">60</property>
+
+ (dom-print (kdenlive-producer-black 500))
  )
 
 (comment ; kdenlive-entry, kdenlive-playlist-main-bin
