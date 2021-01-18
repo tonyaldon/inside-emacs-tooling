@@ -73,11 +73,11 @@ See: `kdenlive-producer-image'.")
 
 (defvar kdenlive-producer-black-hd-1080p-60fps
   '(("length" . "15000")
-		("eof" . "pause")
-		("resource" . "black")
-		("aspect_ratio" . "0")
-		("mlt_service" . "colour")
-		("set.test_audio" . "0"))
+    ("eof" . "pause")
+    ("resource" . "black")
+    ("aspect_ratio" . "0")
+    ("mlt_service" . "colour")
+    ("set.test_audio" . "0"))
   "Alist of default property names and values (\"name\" . \"value\") for
 the \"black\" producer 1920x1080 pixels and the video edited at 60fps.
 
@@ -86,7 +86,7 @@ by the playlist \"black_track\".  And the playlist \"black_track\" must
 appear first (first child) in the special \"tractor\" node \"maintractor\".")
 
 (defvar kdenlive-producer-black-id "black"
-	"id of the producer `kdenlive-producer-black'.
+  "id of the producer `kdenlive-producer-black'.
 
 This variable is also used in `kdenlive-playlist-black-track'.")
 
@@ -155,7 +155,7 @@ PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-108
          (out-string (int-to-string (1- duration)))
          (dir (int-to-string (or folder -1)))
          (producer (dom-node 'producer
-                             `((id . ,id-string) (out . ,out-string) (in . "0"))))
+                              `((id . ,id-string) (out . ,out-string) (in . "0"))))
          (properties (or producer-properties
                          kdenlive-producer-image-properties-hd-1080p-60fps)))
     (--each properties
@@ -170,24 +170,24 @@ PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-108
 
 See `kdenlive-producer-black-hd-1080p-60fps'."
   (let* ((out-string (int-to-string out))
-				 (producer (dom-node 'producer
-                             `((id . ,kdenlive-producer-black-id)
-															 (out . ,out-string)
-															 (in . "0")))))
-		(--each kdenlive-producer-black-hd-1080p-60fps
-			(dom-append-child producer (kdenlive-property (car it) (cdr it))))
-		producer))
+         (producer (dom-node 'producer
+                              `((id . ,kdenlive-producer-black-id)
+                                (out . ,out-string)
+                                (in . "0")))))
+    (--each kdenlive-producer-black-hd-1080p-60fps
+      (dom-append-child producer (kdenlive-property (car it) (cdr it))))
+    producer))
 
 (defun kdenlive-playlist-black-track ()
   "Return the \"black_track\" playlist node.
 
 See `kdenlive-producer-black' and `kdenlive-producer-black-hd-1080p-60fps'."
-	(let ((playlist (dom-node 'playlist '((id . "black_track")))))
-		(dom-append-child playlist
-											(dom-node 'entry `((producer . ,kdenlive-producer-black-id)
-																				 (out . "0")
-																				 (in . "0"))))
-		playlist))
+  (let ((playlist (dom-node 'playlist '((id . "black_track")))))
+    (dom-append-child playlist
+                      (dom-node 'entry `((producer . ,kdenlive-producer-black-id)
+                                         (out . "0")
+                                         (in . "0"))))
+    playlist))
 
 (defun kdenlive-entry (id duration)
   "Return an \"entry\" node aimed to be a child of the node \"playlist\"
@@ -198,8 +198,8 @@ DURATION is the number of frame the producer lasts. "
   (let ((id-string (int-to-string id))
         (out-string (int-to-string (1- duration))))
     (dom-node 'entry `((producer . ,id-string)
-											 (out . ,out-string)
-											 (in . "0")))))
+                       (out . ,out-string)
+                       (in . "0")))))
 
 ;; I may have to add this properties to <playlist id="main bin"> later
 ;; kdenlive:documentnotes
@@ -223,65 +223,65 @@ be a strickly positive integer.
 
 See `kdenlive-docproperties-hd-1080p-60fps'."
   (let ((main-bin (dom-node 'playlist `((id . "main bin")))))
-	  (--each folders
-			(dom-append-child
-			 main-bin
-			 (kdenlive-property
-				(s-concat "kdenlive:folder.-1." (int-to-string (car it)))
-				(cdr it))))
+    (--each folders
+      (dom-append-child
+       main-bin
+       (kdenlive-property
+        (s-concat "kdenlive:folder.-1." (int-to-string (car it)))
+        (cdr it))))
     (--each producers
       (dom-append-child main-bin (kdenlive-entry (car it) (cdr it))))
-		(--each kdenlive-docproperties-hd-1080p-60fps
-			(dom-append-child
-			 main-bin
-			 (kdenlive-property
-				(s-concat "kdenlive:docproperties." (car it))
-				(cdr it))))
-		(dom-append-child main-bin (kdenlive-property "xml_retain" "1"))
+    (--each kdenlive-docproperties-hd-1080p-60fps
+      (dom-append-child
+       main-bin
+       (kdenlive-property
+        (s-concat "kdenlive:docproperties." (car it))
+        (cdr it))))
+    (dom-append-child main-bin (kdenlive-property "xml_retain" "1"))
     main-bin))
 
 (defun kdenlive-playlist-id (id)
   "Return the formatted playlist identifier from ID."
-	(s-concat "playlist" (int-to-string id)))
+  (s-concat "playlist" (int-to-string id)))
 
 (defun kdenlive-playlist (id name &optional audio)
   "Return a playlist node.
 
 If AUDIO is non-nil, the playist is an audio track."
-	(let* ((playlist-id (kdenlive-playlist-id id))
-				 (playlist (dom-node 'playlist `((id . ,playlist-id)))))
-		(dom-append-child playlist (kdenlive-property "kdenlive:track_name" name))
-		(when audio
-			(dom-append-child playlist (kdenlive-property "kdenlive:audio_track" "1")))
-		playlist))
+  (let* ((playlist-id (kdenlive-playlist-id id))
+         (playlist (dom-node 'playlist `((id . ,playlist-id)))))
+    (dom-append-child playlist (kdenlive-property "kdenlive:track_name" name))
+    (when audio
+      (dom-append-child playlist (kdenlive-property "kdenlive:audio_track" "1")))
+    playlist))
 
 (defun kdenlive-track (id hide)
   "Return a \"track\" node.
 
 ID is the id of a playlist as in `kdenlive-playlist-id'.
 HIDE can be nil, \"video\" or \"audio\"."
-	(let ((playlist-id (kdenlive-playlist-id id)))
-		(if hide
-				(dom-node 'track `((producer . ,playlist-id) (hide . ,hide)))
-			(dom-node 'track `((producer . ,playlist-id))))))
+  (let ((playlist-id (kdenlive-playlist-id id)))
+    (if hide
+        (dom-node 'track `((producer . ,playlist-id) (hide . ,hide)))
+      (dom-node 'track `((producer . ,playlist-id))))))
 
 (defun kdenlive-maintractor (tracks)
   "Return the \"maintractor\" tractor node.
 
 TRACKS is an alist (ID . HIDE) where ID is the id of a playlist
 as in `kdenlive-playlist-id'.  HIDE can be nil, \"video\" or \"audio\"."
-	(let* ((maintractor
-					(dom-node 'tractor
-										`((id . "maintractor")
-											(title . "Anonymous Submission")
-											(global_feed . "1")
-											(out . "0")
-											(in . "0")))))
-		(dom-append-child maintractor
-											(dom-node 'track '((producer . "black_track"))))
-		(--each tracks
-			(dom-append-child maintractor (kdenlive-track (car it) (cdr it))))
-		maintractor))
+  (let* ((maintractor
+          (dom-node 'tractor
+                     `((id . "maintractor")
+                       (title . "Anonymous Submission")
+                       (global_feed . "1")
+                       (out . "0")
+                       (in . "0")))))
+    (dom-append-child maintractor
+                      (dom-node 'track '((producer . "black_track"))))
+    (--each tracks
+      (dom-append-child maintractor (kdenlive-track (car it) (cdr it))))
+    maintractor))
 
 (defun kdenlive-mlt (root kdenlive-mlt-alist)
   "Return the mlt `dom-node' of a kdenlive project with the caracteristics
@@ -306,12 +306,12 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 (defun kdenlive-serialize (mlt &optional pretty)
   "Convert DOM into a string containing the xml representation."
   (let ((mlt-xml))
-		(with-temp-buffer
-			(insert "<?xml version='1.0 encoding='utf-8'?>")
-			(when pretty (insert "\n"))
-			(dom-print mlt pretty)
-			(setq mlt-xml (buffer-substring-no-properties (point-min) (point-max))))
-		mlt-xml))
+    (with-temp-buffer
+      (insert "<?xml version='1.0 encoding='utf-8'?>")
+      (when pretty (insert "\n"))
+      (dom-print mlt pretty)
+      (setq mlt-xml (buffer-substring-no-properties (point-min) (point-max))))
+    mlt-xml))
 
 (defun kdenlive-write (mlt path &optional pretty)
   "Write serialized MLT dom to file PATH."
@@ -368,7 +368,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  (dom-print (kdenlive-playlist-main-bin nil nil))
  (kdenlive-playlist-main-bin '((1 . 60) (2 . 180)))
  (kdenlive-playlist-main-bin '((1 . 60) (2 . 180))
-														 '((1 . "folder-1") (2 . "folder-2")))
+                              '((1 . "folder-1") (2 . "folder-2")))
  (kdenlive-playlist-id 2) ; "playlist2"
  (dom-print (kdenlive-playlist 3 "Video"))
  (dom-print (kdenlive-playlist 1 "Audio" t))
@@ -378,7 +378,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  (kdenlive-track 2 nil)
  (kdenlive-track 1 "video")
  (dom-print (kdenlive-maintractor '((1 . "video") (2 . "video") (3 . nil)))
-						t)
+            t)
 
  ;; <tractor id="maintractor" title="Anonymous Submission" global_feed="1" out="0" in="0">
  ;; <track producer="black_track" />
@@ -403,22 +403,22 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  (kdenlive-serialize
   (kdenlive-append (dom-node 'mlt)
                    (kdenlive-profile '((width . "1920") (height . "1080"))))
-	t)
+  t)
  (setq kd-root (f-join default-directory "test"))
  (kdenlive-serialize (kdenlive-append (kdenlive-mlt kd-root kdenlive-mlt-default)
-																			(kdenlive-profile kdenlive-profile-hd-1080p-60fps)))
+                                      (kdenlive-profile kdenlive-profile-hd-1080p-60fps)))
 
  (setq kd-root (f-join default-directory "test"))
  (kdenlive-write (kdenlive-mlt kd-root kdenlive-mlt-default)
-								 (f-join kd-root "test-1.kdenlive"))
+                 (f-join kd-root "test-1.kdenlive"))
  (kdenlive-write (kdenlive-mlt kd-root kdenlive-mlt-default)
-								 (f-join kd-root "test-1-pretty.kdenlive")
-								 t)
+                 (f-join kd-root "test-1-pretty.kdenlive")
+                 t)
  (kdenlive-write
-	(kdenlive-append (kdenlive-mlt kd-root kdenlive-mlt-default)
-									 (kdenlive-profile kdenlive-profile-hd-1080p-60fps))
-	(f-join kd-root "test-2-pretty.kdenlive")
-	t)
+  (kdenlive-append (kdenlive-mlt kd-root kdenlive-mlt-default)
+                   (kdenlive-profile kdenlive-profile-hd-1080p-60fps))
+  (f-join kd-root "test-2-pretty.kdenlive")
+  t)
  )
 
 ;;;; dom.el
