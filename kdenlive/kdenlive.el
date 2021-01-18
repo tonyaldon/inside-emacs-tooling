@@ -285,13 +285,14 @@ as in `kdenlive-playlist-id'.  HIDE can be nil, \"video\" or \"audio\"."
       (dom-append-child maintractor (kdenlive-track (car it) (cdr it))))
     maintractor))
 
-(defun kdenlive-mlt (root kdenlive-mlt-alist)
-  "Return the mlt `dom-node' of a kdenlive project with the caracteristics
-describe in KDENLIVE-MLT-ALIST and setting path root to ROOT.
+(defun kdenlive-mlt (root &optional mlt-attributes)
+  "Return the mlt `dom-node' of a kdenlive project with the attributes
+describe in MLT-ATTRIBUTES and setting path root to ROOT.
 
-See `kdenlive-mlt-default' for an example of KDENLIVE-PROFILE-ALIST."
-  (let ((kd-mlt-alist (cons `(root . ,root) kdenlive-mlt-alist)))
-    (dom-node 'mlt kd-mlt-alist)))
+See `kdenlive-mlt-default' for an example of MLT-ATTRIBUTES."
+  (let ((mlt-attibutes-with-root (cons `(root . ,root)
+																			 (or mlt-attributes kdenlive-mlt-default))))
+    (dom-node 'mlt mlt-attibutes-with-root)))
 
 (defun kdenlive-profile (kdenlive-profile-alist)
   "Return the profile `dom-node' of a kdenlive project with the caracteristics
@@ -395,6 +396,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  (kdenlive-profile kdenlive-profile-hd-1080p-60fps)
 
  (setq kd-root (f-join default-directory "test"))
+ (kdenlive-mlt kd-root)
  (kdenlive-mlt kd-root kdenlive-mlt-default)
  (kdenlive-append (dom-node 'mlt)
                   (kdenlive-profile '((width . "1920") (height . "1080"))))
@@ -407,13 +409,15 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
                    (kdenlive-profile '((width . "1920") (height . "1080"))))
   t)
  (setq kd-root (f-join default-directory "test"))
- (kdenlive-serialize (kdenlive-append (kdenlive-mlt kd-root kdenlive-mlt-default)
+ (kdenlive-serialize (kdenlive-append (kdenlive-mlt kd-root)
                                       (kdenlive-profile kdenlive-profile-hd-1080p-60fps)))
+ )
 
+(comment ; kdenlive-write
  (setq kd-root (f-join default-directory "test"))
- (kdenlive-write (kdenlive-mlt kd-root kdenlive-mlt-default)
+ (kdenlive-write (kdenlive-mlt kd-root)
                  (f-join kd-root "test-1.kdenlive"))
- (kdenlive-write (kdenlive-mlt kd-root kdenlive-mlt-default)
+ (kdenlive-write (kdenlive-mlt kd-root)
                  (f-join kd-root "test-1-pretty.kdenlive")
                  t)
  (kdenlive-write
