@@ -294,12 +294,12 @@ See `kdenlive-mlt-default' for an example of MLT-ATTRIBUTES."
 																			 (or mlt-attributes kdenlive-mlt-default))))
     (dom-node 'mlt mlt-attibutes-with-root)))
 
-(defun kdenlive-profile (kdenlive-profile-alist)
+(defun kdenlive-profile (&optional profile-attributes)
   "Return the profile `dom-node' of a kdenlive project with the caracteristics
-describe in KDENLIVE-PROFILE-ALIST.
+describe in PROFILE-ATTRIBUTES.
 
-See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
-  (dom-node 'profile kdenlive-profile-alist))
+See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
+  (dom-node 'profile (or profile-attributes kdenlive-profile-hd-1080p-60fps)))
 
 (defun kdenlive-append (mlt node)
   "Append NODE to the children of kdenlive MLT node."
@@ -393,6 +393,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  )
 
 (comment ; kdenlive-mlt, kdenlive-append, kdenlive-profile, kdenlive-serialize
+ (kdenlive-profile)
  (kdenlive-profile kdenlive-profile-hd-1080p-60fps)
 
  (setq kd-root (f-join default-directory "test"))
@@ -409,8 +410,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
                    (kdenlive-profile '((width . "1920") (height . "1080"))))
   t)
  (setq kd-root (f-join default-directory "test"))
- (kdenlive-serialize (kdenlive-append (kdenlive-mlt kd-root)
-                                      (kdenlive-profile kdenlive-profile-hd-1080p-60fps)))
+ (kdenlive-serialize (kdenlive-append (kdenlive-mlt kd-root) (kdenlive-profile)))
  )
 
 (comment ; kdenlive-write
