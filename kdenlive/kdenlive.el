@@ -224,6 +224,21 @@ See `kdenlive-docproperties-hd-1080p-60fps'."
 		(dom-append-child main-bin (kdenlive-property "xml_retain" "1"))
     main-bin))
 
+(defun kdenlive-playlist-id (id)
+  "Return the formatted playlist identifier from ID."
+	(s-concat "playlist" (int-to-string id)))
+
+(defun kdenlive-playlist (id name &optional audio)
+  "Return a playlist node.
+
+If AUDIO is non-nil, the playist is an audio track."
+	(let* ((playlist-id (kdenlive-playlist-id id))
+				 (playlist (dom-node 'playlist `((id . ,playlist-id)))))
+		(dom-append-child playlist (kdenlive-property "kdenlive:track_name" name))
+		(when audio
+			(dom-append-child playlist (kdenlive-property "kdenlive:audio_track" "1")))
+		playlist))
+
 (defun kdenlive-mlt (root kdenlive-mlt-alist)
   "Return the mlt `dom-node' of a kdenlive project with the caracteristics
 describe in KDENLIVE-MLT-ALIST and setting path root to ROOT.
@@ -300,12 +315,15 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  (dom-print (kdenlive-producer-black 500))
  )
 
-(comment ; kdenlive-entry, kdenlive-playlist-main-bin
+(comment ; kdenlive-entry, kdenlive-playlist-main-bin, kdenlive-playlist
  (dom-print (kdenlive-entry 2 60)) ; <entry producer="2" out="59" in="0" />
  (dom-print (kdenlive-playlist-main-bin nil nil))
  (kdenlive-playlist-main-bin '((1 . 60) (2 . 180)))
  (kdenlive-playlist-main-bin '((1 . 60) (2 . 180))
 														 '((1 . "folder-1") (2 . "folder-2")))
+ (kdenlive-playlist-id 2) ; "playlist2"
+ (dom-print (kdenlive-playlist 3 "Video"))
+ (dom-print (kdenlive-playlist 1 "Audio" t))
  )
 (comment ; kdenlive-mlt, kdenlive-append, kdenlive-profile, kdenlive-print
  (kdenlive-profile kdenlive-profile-hd-1080p-60fps)
