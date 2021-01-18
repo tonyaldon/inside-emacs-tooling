@@ -71,6 +71,34 @@ property names that vary.  This is why they are not in
 
 See: `kdenlive-producer-image'.")
 
+(defvar kdenlive-docproperties-hd-1080p-60fps
+  '(("audiotargettrack" . "2")
+    ("decimalPoint" . ".")
+    ("disablepreview" . "0")
+    ("enableproxy" . "0")
+    ("generateimageproxy" . "0")
+    ("generateproxy" . "0")
+    ("kdenliveversion" . "17.12.3")
+    ("position" . "0")
+    ("profile" . "atsc_1080p_60")
+    ("proxyextension" . "mkv")
+    ("proxyimageminsize" . "2000")
+    ("proxyminsize" . "1000")
+    ("proxyparams" . "-vf yadif,scale=960:-2 -qscale 3 -vcodec mjpeg -acodec pcm_s16le")
+    ("version" . "0.96")
+    ("verticalzoom" . "1")
+    ("videotargettrack" . "3")
+    ("zonein" . "0")
+    ("zoneout" . "100")
+    ("zoom" . "7"))
+  "Alist of default property names and values (\"name\" . \"value\") for
+the <playlist id =\"main bin\"> of a kdenlive project edited in HD 1080p at 60fps.
+
+Here are exclude the properties \"previewchunks\", \"previewextension\", \"previewparameters\",
+\"dirtypreviewchunks\", \"documentid\".  We maybe have to add them later.
+
+See: `kdenlive-playlist-main-bin'.")
+
 (defun kdenlive-property (name child)
   "Return a 'property' node with attribute 'name' and value NAME.
 
@@ -118,6 +146,58 @@ PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-108
       (dom-append-child producer (kdenlive-property (car it) (cdr it))))
     producer))
 
+(defun kdenlive-entry (id duration)
+  "Return an \"entry\" node aimed to be a child of the node \"playlist\"
+with id \"main bin\".
+
+ID is the identifier of the producer node in the kdenlive dom and
+DURATION is the number of frame the producer lasts. "
+  (let ((id-string (int-to-string id))
+        (out-string (int-to-string (1- duration))))
+    (dom-node 'entry `((producer . ,id-string)
+											 (out . ,out-string)
+											 (in . "0")))))
+
+;; I may have to add this properties to <playlist id="main bin"> later
+;; kdenlive:documentnotes
+;; kdenlive:clipgroups
+
+;; ("xml_retain" . "1")
+
+(defun kdenlive-playlist-main-bin (producers &optional folders)
+  "Return the node \"playlist\" with id \"main bin\".
+
+This node holds project-specific (meta) data, the
+bin folders as well as their hierarchy, clip groups,
+and some more stuff.
+
+PRODUCERS is an alist of (ID . DURATION) where ID is the identifier
+of a producer node in the kdenlive dom and DURATION is number of frame
+the producer last.
+
+FOLDERS is an alist of (ID . FOLDER) where FOLDER is the name
+of the folder use in the GUI kdenlive interface and ID is the
+identifier use in the kdenlive dom by the producers.  ID must
+be a strickly positive integer.
+
+See `kdenlive-docproperties-hd-1080p-60fps'."
+  (let ((main-bin (dom-node 'playlist `((id . "main bin")))))
+	  (--each folders
+			(dom-append-child
+			 main-bin
+			 (kdenlive-property
+				(s-concat "kdenlive:folder.-1." (int-to-string (car it)))
+				(cdr it))))
+    (--each producers
+      (dom-append-child main-bin (kdenlive-entry (car it) (cdr it))))
+		(--each kdenlive-docproperties-hd-1080p-60fps
+			(dom-append-child
+			 main-bin
+			 (kdenlive-property
+				(s-concat "kdenlive:docproperties." (car it))
+				(cdr it))))
+		(dom-append-child main-bin (kdenlive-property "xml_retain" "1"))
+    main-bin))
 
 (defun kdenlive-mlt (root kdenlive-mlt-alist)
   "Return the mlt `dom-node' of a kdenlive project with the caracteristics
@@ -200,6 +280,13 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  (dom-print (kdenlive-property "length" "60")) ; <property name="length">60</property>
  )
 
+(comment ; kdenlive-entry, kdenlive-playlist-main-bin
+ (dom-print (kdenlive-entry 2 60)) ; <entry producer="2" out="59" in="0" />
+ (dom-print (kdenlive-playlist-main-bin nil nil))
+ (kdenlive-playlist-main-bin '((1 . 60) (2 . 180)))
+ (kdenlive-playlist-main-bin '((1 . 60) (2 . 180))
+														 '((1 . "folder-1") (2 . "folder-2")))
+ )
 (comment ; kdenlive-mlt, kdenlive-append, kdenlive-profile, kdenlive-print
  (kdenlive-profile kdenlive-profile-hd-1080p-60fps)
  (setq kd-root (f-join default-directory "test"))
