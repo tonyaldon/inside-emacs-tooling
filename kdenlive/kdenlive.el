@@ -178,6 +178,17 @@ See `kdenlive-producer-black-hd-1080p-60fps'."
 			(dom-append-child producer (kdenlive-property (car it) (cdr it))))
 		producer))
 
+(defun kdenlive-playlist-black-track ()
+  "Return the \"black_track\" playlist node.
+
+See `kdenlive-producer-black' and `kdenlive-producer-black-hd-1080p-60fps'."
+	(let ((playlist (dom-node 'playlist '((id . "black_track")))))
+		(dom-append-child playlist
+											(dom-node 'entry `((producer . ,kdenlive-producer-black-id)
+																				 (out . "0")
+																				 (in . "0"))))
+		playlist))
+
 (defun kdenlive-entry (id duration)
   "Return an \"entry\" node aimed to be a child of the node \"playlist\"
 with id \"main bin\".
@@ -284,7 +295,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 
 ;;;; kdenlive
 
-(comment ; kdenlive-producer-image, kdenlive-property, kdenlive-producer-black
+(comment ; kdenlive-producer-image, kdenlive-property
  (dom-print
   (kdenlive-producer-image 2 60 "/absolute/path/to/image.svg" nil '(("tony" . "jim")))) ; <producer id="2" out="59" in="0"><property name="tony">jim</property><property name="resource">/absolute/path/to/image.svg</property><property name="length">60</property><property name="kdenlive:duration">60</property><property name="kdenlive:folderid">-1</property></producer>
  (dom-print
@@ -318,9 +329,12 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
                         (kdenlive-property (car it) (cdr it))))
     producer))
  (dom-print (kdenlive-property "length" "60")) ; <property name="length">60</property>
- (dom-print (kdenlive-producer-black 500))
  )
 
+(comment ; kdenlive-producer-black, kdenlive-playlist-black-track
+ (dom-print (kdenlive-producer-black 500))
+ (kdenlive-playlist-black-track) ; (playlist ((id . "black_track")) (entry ((producer . "black") (out . "0") (in . "0"))))
+ )
 (comment ; kdenlive-entry, kdenlive-playlist-main-bin, kdenlive-playlist
  (dom-print (kdenlive-entry 2 60)) ; <entry producer="2" out="59" in="0" />
  (dom-print (kdenlive-playlist-main-bin nil nil))
