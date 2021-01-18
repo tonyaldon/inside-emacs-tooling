@@ -1,6 +1,6 @@
 ;;; About
 
-;; Functions and commands that can generate .kdenlive file.
+;; Functions and commands that can generate .kdenlive files.
 ;; That means files that kdenlive understands.
 ;; see: https://kdenlive.org, https://github.com/KDE/kdenlive
 ;;
@@ -9,19 +9,21 @@
 ;;   I know that we are already past version 20.12,
 ;;   but in my old laptop kdenlive 20.12 is too slow.
 ;;   Nevertheless, if you generate a .kdenlive file with this package,
-;;   when opening your file with kdenlive 20.12, kdenlive ask you to
+;;   when opening your file with kdenlive 20.12, kdenlive asks you to
 ;;   to adapt your file to the newer version.
-;;   I'm fine with that.  My goal with this package isn't to manipulate deeply
+;;   I'm fine with that.  My goal with this package isn't to deeply manipulate
 ;;   or generate complex kdenlive files, but just to help me automate some
 ;;   repetive tasks involving kdenlive during the production of the Inside Emacs
 ;;   videos : https://www.youtube.com/channel/UCQCrbWOFRmFYqoeou0Qv3Kg
 
 ;;; Code
 
-;; in svg.el and dom.el, it seems that almost every operation on the dom
-;; is destructive.
-;; In kdenlive.el, we try to work with pure function (take an input value
-;; and return a value without changing the state of emacs inside the function).
+;; Note:
+;; In svg.el and dom.el, it seems that almost every operation on
+;; the dom is destructive.
+;; In kdenlive.el, we try to work with pure functions (take an input
+;; value and return a value without changing the state of emacs in
+;; the body function).
 
 (require 'xml)
 (require 'dom)
