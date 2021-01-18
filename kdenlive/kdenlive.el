@@ -71,6 +71,25 @@ property names that vary.  This is why they are not in
 
 See: `kdenlive-producer-image'.")
 
+(defvar kdenlive-producer-black-hd-1080p-60fps
+  '(("length" . "15000")
+		("eof" . "pause")
+		("resource" . "black")
+		("aspect_ratio" . "0")
+		("mlt_service" . "colour")
+		("set.test_audio" . "0"))
+  "Alist of default property names and values (\"name\" . \"value\") for
+the \"black\" producer 1920x1080 pixels and the video edited at 60fps.
+
+This is a special mandatory producer kdenlive always needs.  It is used
+by the playlist \"black_track\".  And the playlist \"black_track\" must
+appear first (first child) in the special \"tractor\" node \"maintractor\".")
+
+(defvar kdenlive-producer-black-id "black"
+	"id of the producer `kdenlive-producer-black'.
+
+This variable is also used in `kdenlive-playlist-black-track'.")
+
 (defvar kdenlive-docproperties-hd-1080p-60fps
   '(("audiotargettrack" . "2")
     ("decimalPoint" . ".")
@@ -145,25 +164,6 @@ PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-108
               ("kdenlive:duration" . ,dur) ("kdenlive:folderid" . ,dir))
       (dom-append-child producer (kdenlive-property (car it) (cdr it))))
     producer))
-
-(defvar kdenlive-producer-black-hd-1080p-60fps
-  '(("length" . "15000")
-		("eof" . "pause")
-		("resource" . "black")
-		("aspect_ratio" . "0")
-		("mlt_service" . "colour")
-		("set.test_audio" . "0"))
-  "Alist of default property names and values (\"name\" . \"value\") for
-the \"black\" producer 1920x1080 pixels and the video edited at 60fps.
-
-This is a special mandatory producer kdenlive always needs.  It is used
-by the playlist \"black_track\".  And the playlist \"black_track\" must
-appear first (first child) in the special \"tractor\" node \"maintractor\".")
-
-(defvar kdenlive-producer-black-id "black"
-	"id of the producer `kdenlive-producer-black'.
-
-This variable is also used in `kdenlive-playlist-black-track'.")
 
 (defun kdenlive-producer-black (out)
   "Return the producer node \"black\".
