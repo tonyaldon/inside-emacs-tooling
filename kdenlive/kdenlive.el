@@ -255,6 +255,34 @@ If AUDIO is non-nil, the playist is an audio track."
 			(dom-append-child playlist (kdenlive-property "kdenlive:audio_track" "1")))
 		playlist))
 
+(defun kdenlive-track (id hide)
+  "Return a \"track\" node.
+
+ID is the id of a playlist as in `kdenlive-playlist-id'.
+HIDE can be nil, \"video\" or \"audio\"."
+	(let ((playlist-id (kdenlive-playlist-id id)))
+		(if hide
+				(dom-node 'track `((producer . ,playlist-id) (hide . ,hide)))
+			(dom-node 'track `((producer . ,playlist-id))))))
+
+(defun kdenlive-maintractor (tracks)
+  "Return the \"maintractor\" tractor node.
+
+TRACKS is an alist (ID . HIDE) where ID is the id of a playlist
+as in `kdenlive-playlist-id'.  HIDE can be nil, \"video\" or \"audio\"."
+	(let* ((maintractor
+					(dom-node 'tractor
+										`((id . "maintractor")
+											(title . "Anonymous Submission")
+											(global_feed . "1")
+											(out . "0")
+											(in . "0")))))
+		(dom-append-child maintractor
+											(dom-node 'track '((producer . "black_track"))))
+		(--each tracks
+			(dom-append-child maintractor (kdenlive-track (car it) (cdr it))))
+		maintractor))
+
 (defun kdenlive-mlt (root kdenlive-mlt-alist)
   "Return the mlt `dom-node' of a kdenlive project with the caracteristics
 describe in KDENLIVE-MLT-ALIST and setting path root to ROOT.
@@ -339,6 +367,22 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
  (dom-print (kdenlive-playlist 3 "Video"))
  (dom-print (kdenlive-playlist 1 "Audio" t))
  )
+
+(comment ; kdenlive-track, kdenlive-maintractor
+ (kdenlive-track 2 nil)
+ (kdenlive-track 1 "video")
+ (dom-print (kdenlive-maintractor '((1 . "video") (2 . "video") (3 . nil)))
+						t)
+
+ ;; <tractor id="maintractor" title="Anonymous Submission" global_feed="1" out="0" in="0">
+ ;; <track producer="black_track" />
+ ;; <track producer="playlist1" hide="video" />
+ ;; <track producer="playlist2" hide="video" />
+ ;; <track producer="playlist3" />
+ ;; </tractor>
+
+ )
+
 (comment ; kdenlive-mlt, kdenlive-append, kdenlive-profile, kdenlive-print
  (kdenlive-profile kdenlive-profile-hd-1080p-60fps)
  (setq kd-root (f-join default-directory "test"))
