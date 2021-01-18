@@ -316,8 +316,6 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 
 ;;;; TODO
 ;;;;; producer
-;;;;; tractor id="maintractor"
-
 ;;; Comments
 
 ;;;; kdenlive
