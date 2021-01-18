@@ -251,19 +251,12 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 
 
 ;;;; TODO
-;;;;; playlist id="main bin"
-
-;; any producer node <producer id="1" out="603" in="0"> must be added
-;; to <playlist id="main bin"> node as <entry out="603" producer="1" in="0"/>
-
 ;;;;; producer
 
-;;;;; producer id="black"
 ;;;;; playlist id="black_track"
-
-;;;;; playlist
-
 ;;;;; tractor id="maintractor"
+
+
 
 ;;; Comments
 
