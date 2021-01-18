@@ -167,11 +167,11 @@ PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-108
       (dom-append-child producer (kdenlive-property (car it) (cdr it))))
     producer))
 
-(defun kdenlive-producer-black (out)
+(defun kdenlive-producer-black (&optional out)
   "Return the producer node \"black\".
 
 See `kdenlive-producer-black-hd-1080p-60fps'."
-  (let* ((out-string (int-to-string out))
+  (let* ((out-string (or (and out (int-to-string out)) "500"))
          (producer (dom-node 'producer
                               `((id . ,kdenlive-producer-black-id)
                                 (out . ,out-string)
@@ -363,6 +363,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
  )
 
 (comment ; kdenlive-producer-black, kdenlive-playlist-black-track
+ (dom-print (kdenlive-producer-black))
  (dom-print (kdenlive-producer-black 500))
  (kdenlive-playlist-black-track) ; (playlist ((id . "black_track")) (entry ((producer . "black") (out . "0") (in . "0"))))
  )
