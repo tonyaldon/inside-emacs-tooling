@@ -205,8 +205,6 @@ DURATION is the number of frame the producer lasts. "
 ;; kdenlive:documentnotes
 ;; kdenlive:clipgroups
 
-;; ("xml_retain" . "1")
-
 (defun kdenlive-playlist-main-bin (producers &optional folders)
   "Return the node \"playlist\" with id \"main bin\".
 
@@ -285,11 +283,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 
 ;;;; TODO
 ;;;;; producer
-
-;;;;; playlist id="black_track"
 ;;;;; tractor id="maintractor"
-
-
 
 ;;; Comments
 
