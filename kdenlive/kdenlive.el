@@ -160,13 +160,20 @@ This is a special mandatory producer kdenlive always needs.  It is used
 by the playlist \"black_track\".  And the playlist \"black_track\" must
 appear first (first child) in the special \"tractor\" node \"maintractor\".")
 
+(defvar kdenlive-producer-black-id "black"
+	"id of the producer `kdenlive-producer-black'.
+
+This variable is also used in `kdenlive-playlist-black-track'.")
+
 (defun kdenlive-producer-black (out)
   "Return the producer node \"black\".
 
 See `kdenlive-producer-black-hd-1080p-60fps'."
   (let* ((out-string (int-to-string out))
 				 (producer (dom-node 'producer
-                             `((id . "black") (out . ,out-string) (in . "0")))))
+                             `((id . ,kdenlive-producer-black-id)
+															 (out . ,out-string)
+															 (in . "0")))))
 		(--each kdenlive-producer-black-hd-1080p-60fps
 			(dom-append-child producer (kdenlive-property (car it) (cdr it))))
 		producer))
@@ -311,7 +318,6 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
                         (kdenlive-property (car it) (cdr it))))
     producer))
  (dom-print (kdenlive-property "length" "60")) ; <property name="length">60</property>
-
  (dom-print (kdenlive-producer-black 500))
  )
 
