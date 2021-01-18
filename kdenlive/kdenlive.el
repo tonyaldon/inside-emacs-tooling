@@ -303,10 +303,15 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
   (let ((mlt-local mlt))
     (dom-append-child mlt-local node)))
 
-(defun kdenlive-print (mlt)
+(defun kdenlive-serialize (mlt &optional pretty)
   "Convert DOM into a string containing the xml representation."
-  (insert "<?xml version='1.0 encoding='utf-8'?>")
-  (dom-print mlt))
+  (let ((mlt-xml))
+		(with-temp-buffer
+			(insert "<?xml version='1.0 encoding='utf-8'?>")
+			(when pretty (insert "\n"))
+			(dom-print mlt pretty)
+			(setq mlt-xml (buffer-substring-no-properties (point-min) (point-max))))
+		mlt-xml))
 
 
 ;;;; TODO
@@ -383,19 +388,26 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 
  )
 
-(comment ; kdenlive-mlt, kdenlive-append, kdenlive-profile, kdenlive-print
+(comment ; kdenlive-mlt, kdenlive-append, kdenlive-profile, kdenlive-serialize
  (kdenlive-profile kdenlive-profile-hd-1080p-60fps)
+
  (setq kd-root (f-join default-directory "test"))
  (kdenlive-mlt kd-root kdenlive-mlt-default)
  (kdenlive-append (dom-node 'mlt)
                   (kdenlive-profile '((width . "1920") (height . "1080"))))
- (kdenlive-print (dom-node 'mlt)) ; <?xml version='1.0 encoding='utf-8'?><mlt />
- (kdenlive-print
+ (kdenlive-serialize (dom-node 'mlt)) ; <?xml version='1.0 encoding='utf-8'?><mlt />
+ (kdenlive-serialize
   (kdenlive-append (dom-node 'mlt)
                    (kdenlive-profile '((width . "1920") (height . "1080"))))) ; <?xml version='1.0 encoding='utf-8'?><mlt><profile width="1920" height="1080" /></mlt>
+ (kdenlive-serialize
+  (kdenlive-append (dom-node 'mlt)
+                   (kdenlive-profile '((width . "1920") (height . "1080"))))
+	t)
  (setq kd-root (f-join default-directory "test"))
- (kdenlive-print (kdenlive-append (kdenlive-mlt kd-root kdenlive-mlt-default)
-                                  (kdenlive-profile kdenlive-profile-hd-1080p-60fps)))
+ (kdenlive-serialize (kdenlive-append (kdenlive-mlt kd-root kdenlive-mlt-default)
+																			(kdenlive-profile kdenlive-profile-hd-1080p-60fps)))
+
+ (setq kd-root (f-join default-directory "test"))
  )
 
 ;;;; dom.el
