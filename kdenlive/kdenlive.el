@@ -313,6 +313,9 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 			(setq mlt-xml (buffer-substring-no-properties (point-min) (point-max))))
 		mlt-xml))
 
+(defun kdenlive-write (mlt path &optional pretty)
+  "Write serialized MLT dom to file PATH."
+  (f-write (kdenlive-serialize mlt pretty) 'utf-8 path))
 
 ;;;; TODO
 ;;;;; producer
@@ -406,6 +409,16 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of KDENLIVE-PROFILE-ALIST."
 																			(kdenlive-profile kdenlive-profile-hd-1080p-60fps)))
 
  (setq kd-root (f-join default-directory "test"))
+ (kdenlive-write (kdenlive-mlt kd-root kdenlive-mlt-default)
+								 (f-join kd-root "test-1.kdenlive"))
+ (kdenlive-write (kdenlive-mlt kd-root kdenlive-mlt-default)
+								 (f-join kd-root "test-1-pretty.kdenlive")
+								 t)
+ (kdenlive-write
+	(kdenlive-append (kdenlive-mlt kd-root kdenlive-mlt-default)
+									 (kdenlive-profile kdenlive-profile-hd-1080p-60fps))
+	(f-join kd-root "test-2-pretty.kdenlive")
+	t)
  )
 
 ;;;; dom.el
