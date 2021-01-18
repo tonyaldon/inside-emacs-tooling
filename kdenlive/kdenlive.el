@@ -173,9 +173,9 @@ PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-108
 See `kdenlive-producer-black-hd-1080p-60fps'."
   (let* ((out-string (or (and out (int-to-string out)) "500"))
          (producer (dom-node 'producer
-                              `((id . ,kdenlive-producer-black-id)
-                                (out . ,out-string)
-                                (in . "0")))))
+                             `((id . ,kdenlive-producer-black-id)
+                               (out . ,out-string)
+                               (in . "0")))))
     (--each kdenlive-producer-black-hd-1080p-60fps
       (dom-append-child producer (kdenlive-property (car it) (cdr it))))
     producer))
@@ -310,7 +310,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
   "Convert DOM into a string containing the xml representation."
   (let ((mlt-xml))
     (with-temp-buffer
-      (insert "<?xml version='1.0 encoding='utf-8'?>")
+      (insert "<?xml version='1.0' encoding='utf-8'?>")
       (when pretty (insert "\n"))
       (dom-print mlt pretty)
       (setq mlt-xml (buffer-substring-no-properties (point-min) (point-max))))
@@ -320,8 +320,6 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
   "Write serialized MLT dom to file PATH."
   (f-write (kdenlive-serialize mlt pretty) 'utf-8 path))
 
-;;;; TODO
-;;;;; producer
 ;;; Comments
 
 ;;;; kdenlive
