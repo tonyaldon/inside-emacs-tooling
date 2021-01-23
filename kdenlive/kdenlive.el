@@ -157,7 +157,7 @@ PRODUCER-PROPERTIES is of the form of `kdenlive-producer-image-properties-hd-108
          (out-string (int-to-string (1- duration)))
          (dir (int-to-string (or folder -1)))
          (producer (dom-node 'producer
-                              `((id . ,id-string) (out . ,out-string) (in . "0"))))
+                             `((id . ,id-string) (out . ,out-string) (in . "0"))))
          (properties (or producer-properties
                          kdenlive-producer-image-properties-hd-1080p-60fps)))
     (--each properties
@@ -274,11 +274,11 @@ TRACKS is an alist (ID . HIDE) where ID is the id of a playlist
 as in `kdenlive-playlist-id'.  HIDE can be nil, \"video\" or \"audio\"."
   (let* ((maintractor
           (dom-node 'tractor
-                     `((id . "maintractor")
-                       (title . "Anonymous Submission")
-                       (global_feed . "1")
-                       (out . "0")
-                       (in . "0")))))
+                    `((id . "maintractor")
+                      (title . "Anonymous Submission")
+                      (global_feed . "1")
+                      (out . "0")
+                      (in . "0")))))
     (dom-append-child maintractor
                       (dom-node 'track '((producer . "black_track"))))
     (--each tracks
@@ -290,8 +290,9 @@ as in `kdenlive-playlist-id'.  HIDE can be nil, \"video\" or \"audio\"."
 describe in MLT-ATTRIBUTES and setting path root to ROOT.
 
 See `kdenlive-mlt-default' for an example of MLT-ATTRIBUTES."
-  (let ((mlt-attibutes-with-root (cons `(root . ,root)
-																			 (or mlt-attributes kdenlive-mlt-default))))
+  (let ((mlt-attibutes-with-root
+         (cons `(root . ,root)
+               (or mlt-attributes kdenlive-mlt-default))))
     (dom-node 'mlt mlt-attibutes-with-root)))
 
 (defun kdenlive-profile (&optional profile-attributes)
@@ -370,7 +371,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
  (dom-print (kdenlive-playlist-main-bin nil nil))
  (kdenlive-playlist-main-bin '((1 . 60) (2 . 180)))
  (kdenlive-playlist-main-bin '((1 . 60) (2 . 180))
-                              '((1 . "folder-1") (2 . "folder-2")))
+                             '((1 . "folder-1") (2 . "folder-2")))
  (kdenlive-playlist-id 2) ; "playlist2"
  (dom-print (kdenlive-playlist 3 "Video"))
  (dom-print (kdenlive-playlist 1 "Audio" t))
