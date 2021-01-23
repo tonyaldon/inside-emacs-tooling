@@ -409,12 +409,16 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
   (kdenlive-append (dom-node 'mlt)
                    (kdenlive-profile '((width . "1920") (height . "1080"))))
   t)
+
  (setq kd-root (f-join default-directory "test"))
  (kdenlive-serialize (kdenlive-append (kdenlive-mlt kd-root) (kdenlive-profile)))
  )
 
 (comment ; kdenlive-write
- (setq kd-root (f-join default-directory "test"))
+ (setq kd-root (let ((test (f-join default-directory "test")))
+                 (unless (f-exists? (f-join default-directory "test"))
+                   (f-mkdir test))
+                 test))
  (kdenlive-write (kdenlive-mlt kd-root)
                  (f-join kd-root "test-1.kdenlive"))
  (kdenlive-write (kdenlive-mlt kd-root)
