@@ -203,10 +203,6 @@ DURATION is the number of frame the producer lasts. "
                        (out . ,out-string)
                        (in . "0")))))
 
-;; I may have to add this properties to <playlist id="main bin"> later
-;; kdenlive:documentnotes
-;; kdenlive:clipgroups
-
 (defun kdenlive-playlist-main-bin (producers &optional folders)
   "Return the node \"playlist\" with id \"main bin\".
 
