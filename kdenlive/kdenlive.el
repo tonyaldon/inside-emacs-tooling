@@ -299,7 +299,7 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
   (dom-node 'profile (or profile-attributes kdenlive-profile-hd-1080p-60fps)))
 
 (defun kdenlive-append (mlt node)
-  "Append NODE to the children of kdenlive MLT node."
+  "Return MLT node with NODE appended to its children."
   (let ((mlt-local mlt))
     (dom-append-child mlt-local node)))
 
