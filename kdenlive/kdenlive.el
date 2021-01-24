@@ -120,6 +120,30 @@ Here are exclude the properties \"previewchunks\", \"previewextension\", \"previ
 
 See: `kdenlive-playlist-main-bin'.")
 
+(defvar kdenlive-playlists
+  '((1  "Audio 2" t)
+    (2  "Audio 1" t)
+    (3  "Video 1" nil)
+    (4  "Video 2" nil)
+    (5  "Video 3" nil))
+  "The default list of (ID NAME AUDIO) playlists used by kdenlive.
+
+ID in `kdenlive-playlists' is an PLAYLIST-ID in `kdenlive-tracks'.")
+
+(defvar kdenlive-tracks
+  '((1 . "video")
+    (2 . "video")
+    (3 . nil)
+    (4 . nil)
+    (5 . nil))
+  "The default alist (PLAYLIST-ID HIDE) representing the stack of
+tracks in kdenlive.
+
+The order matters.  The first cons in the alist `kdenlive-tracks'
+is the bottom track in kdenlive.
+
+PLAYLIST-ID refers to an ID in `kdenlive-playlists'.")
+
 (defun kdenlive-property (name child)
   "Return a 'property' node with attribute 'name' and value NAME.
 
@@ -303,6 +327,69 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
   (let ((mlt-local mlt))
     (dom-append-child mlt-local node)))
 
+(defun kdenlive-append-image-producers (mlt producers)
+  "Return MLT node with image PRODUCERS appended to its children.
+
+MLT is a dom node.
+PRODUCERS is a list of (((PRODUCER-ID DURATION) RESOURCE FOLDER-ID)).
+For instance, the following list is a valid PRODUCERS list:
+  `(((1 . 300) ,(f-full \"image-in-folder-1.svg\") 1)
+    ((2 . 300) ,(f-full \"image-in-folder-2.svg\") 2)
+    ((3 . 300) ,(f-full \"not-in-a-folder.svg\") nil))"
+  (--reduce-from
+   (kdenlive-append acc (kdenlive-producer-image
+                         (caar it) (cdar it) (nth 1 it) (nth 2 it)))
+   mlt producers))
+
+(defun kdenlive-append-playlists (mlt playlists)
+  "Return MLT node with PLAYLISTS appended to its children.
+
+MLT is a dom node.
+PLAYLISTS is a list of list of the form (ID NAME AUDIO).
+`kdenlive-playlists' is a valid PLAYLISTS."
+  (--reduce-from
+   (kdenlive-append
+    acc (kdenlive-playlist (car it) (nth 1 it) (nth 2 it)))
+   mlt playlists))
+
+(defun kdenlive-folder-id (folder folders)
+  "Return the id of FOLDER based on its position in FOLDERS."
+  (when folder
+    (1+ (-elem-index folder folders))))
+
+(defun kdenlive-skeleton-with-images (root folders images &optional playlists tracks)
+  "Return a `kdenlive-mlt' dom skeleton with ROOT, FOLDERS and IMAGES settings.
+
+ROOT is the full path of the kdenlive project.
+FOLDERS is a list of folder names that appears inside GUI kdenlive.
+IMAGES is a list of (DURATION RESOURCE FOLDER) where:
+   DURATION is the number of frames the image last,
+   RESOURCE is the full path of the image,
+   FOLDER is a folder name also in FOLDERS the image belong
+   to inside GUI kdenlive."
+  (let ((folders-alist
+         (--annotate (kdenlive-folder-id it folders) folders))
+        ;; list of ((PRODUCER-ID DURATION) RESOURCE FOLDER-ID)
+        (producers
+         (--map-indexed
+          (list (cons (1+ it-index) (car it))
+                (nth 1 it)
+                (kdenlive-folder-id (nth 2 it) folders))
+          images))
+        (playlists (or playlists kdenlive-playlists))
+        (tracks (or tracks kdenlive-tracks)))
+    (-> (kdenlive-mlt root)
+        (kdenlive-append (kdenlive-profile))
+        (kdenlive-append-image-producers producers)
+        (kdenlive-append (kdenlive-playlist-main-bin
+                          (-map 'car producers)
+                          folders-alist))
+        (kdenlive-append (kdenlive-producer-black))
+        (kdenlive-append (kdenlive-playlist-black-track))
+        (kdenlive-append-playlists playlists)
+        ;; must be append last
+        (kdenlive-append (kdenlive-maintractor tracks)))))
+
 (defun kdenlive-serialize (mlt &optional pretty)
   "Convert DOM into a string containing the xml representation."
   (let ((mlt-xml))
@@ -388,6 +475,18 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
 
  )
 
+(comment ; kdenlive-append-image-producers, kdenlive-append-playlists
+ (let ((mlt (kdenlive-mlt (f-full "test/kdenlive")))
+       (producers
+        `(((1 . 300) ,(f-full "image-in-folder-1.svg") 1)
+          ((2 . 300) ,(f-full "image-in-folder-2.svg") 2)
+          ((3 . 300) ,(f-full "not-in-a-folder.svg") nil))))
+   (kdenlive-append-image-producers mlt producers))
+
+ (let ((mlt (kdenlive-mlt (f-full "test/kdenlive")))
+       (playlists '((1  "Audio 1" t) (2  "Video 1" nil))))
+   (kdenlive-append-playlists mlt playlists)))
+
 (comment ; kdenlive-mlt, kdenlive-append, kdenlive-profile, kdenlive-serialize
  (kdenlive-profile)
  (kdenlive-profile kdenlive-profile-hd-1080p-60fps)
@@ -408,6 +507,28 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
 
  (setq kd-root (f-join default-directory "test"))
  (kdenlive-serialize (kdenlive-append (kdenlive-mlt kd-root) (kdenlive-profile)))
+ )
+
+(comment ; kdenlive-folder-id
+ (kdenlive-folder-id "folder-1" '("folder-1" "folder-2")) ; 1
+ (kdenlive-folder-id "folder-2" '("folder-1" "folder-2")) ; 2
+ (kdenlive-folder-id nil '("folder-1" "folder-2")) ; 2
+ (--annotate (kdenlive-folder-id it '("folder-1" "folder-2"))
+             '("folder-1" "folder-2")) ; ((1 . "folder-1") (2 . "folder-2"))
+ )
+
+(comment ; kdenlive-skeleton-with-images, kdenlive-write
+ (let* ((path (f-full "test/3-images-2-folders-no-timeline.kdenlive"))
+        (root (f-full "test"))
+        (folders '("folder-1" "folder-2"))
+        (images
+         `((300 ,(f-full "test/image-in-folder-1.svg") "folder-1")
+           (300 ,(f-full "test/image-in-folder-2.svg") "folder-2")
+           (300 ,(f-full "test/not-in-a-folder.svg") nil))))
+   (setq mlt (kdenlive-skeleton-with-images root folders images))
+   (unless (f-exists? (f-join default-directory "test"))
+     (f-mkdir "test"))
+   (kdenlive-write mlt path t))
  )
 
 (comment ; kdenlive-write
@@ -555,11 +676,20 @@ See `kdenlive-profile-hd-1080p-60fps' for an example of PROFILE-ATTRIBUTES."
  test-nconc-list-2
  )
 
-(comment ; cddr, regexp-quote
+(comment ; cddr, regexp-quote, s-blank?
  (cddr '(a u i e)) ; (i e)
  (cons '1 nil) ; (1)
  (cons nil '1) ; (nil . 1)
  (regexp-quote "\\") ; "\\\\"
+ (s-blank? nil)
+ )
+
+(comment ; list, ->, --annotate, --map-indexed, -elem-index
+ (list '(1 . 300) "foo" 1) ; ((1 . 300) "foo" 1)
+ (-> '(2 3 5) (append '(8 13)) (-slice 1 -1)) ; (3 5 8)
+ (--annotate (< 1 it) '(0 1 2 3)) ; ((nil . 0) (nil . 1) (t . 2) (t . 3))
+ (--map-indexed (- it it-index) '(1 2 3 4)) ; (1 1 1 1)
+ (-elem-index "bar" '("foo" "bar" "baz")) ; 1
  )
 
 ;;; Footer
