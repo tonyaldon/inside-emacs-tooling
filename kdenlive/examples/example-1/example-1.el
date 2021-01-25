@@ -1,17 +1,29 @@
 ;;; Example 1
 
-;; We create a .kdenlive project:
-;;     kdenlive/3-images-2-folders-no-timeline.kdenlive
-;; The root of the project (where reside the .kdenlive file) is:
-;;     kdenlive/
-;; The project has 3 svg images:
-;;     r-images/image-1-in-folder-images.svg
-;;     r-images/image-2-in-folder-images.svg
-;;     r-images/not-in-a-folder.svg
-;; In GUI kdenlive, emacs-power.svg and generate-kdenlive-file.svg images
-;; belongs to the folder: "images".
-;; not-in-a-folder.svg images doesn't belong to any specific GUI kdenlive folder.
-;; In GUI kdenlive, "audios" is an empty folder.
+;; Our goal is to generate a .kdenlive project file named
+;; "3-images-2-folders-no-timeline.kdenlive".
+;;
+;; To do it we use `kdenlive-append', `kdenlive-profile',
+;; `kdenlive-producer-image', `kdenlive-playlist-main-bin',
+;; `kdenlive-producer-black', `kdenlive-playlist-black-track',
+;; `kdenlive-maintractor', `kdenlive-write' functions.
+;;
+;; Our current directory, looks like this:
+;;
+;; .
+;; ├── example-1.el
+;; ├── kdenlive
+;; │   └── 3-images-2-folders-no-timeline.kdenlive
+;; └── r-images
+;;     ├── image-1-in-folder-images.svg
+;;     ├── image-2-in-folder-images.svg
+;;     └── not-in-a-folder.svg
+;;
+;; In GUI kdenlive, we want:
+;;   "image-1-in-folder-images.svg" belongs to "images" folder
+;;   "image-2-in-folder-images.svg" belongs to "images" folder
+;;   "not-in-a-folder.svg" belongs to any specific folders
+;;   "audios" is an empty folder
 
 (require 'kdenlive)
 
