@@ -193,6 +193,27 @@ In your terminal, if you run `tree`, you should see:
     └── not-in-a-folder.svg
 ```
 
+# Last video
+
+When I'm working on a video, I often have to visit its corresponding
+README.  The video being edited/produced is refered to the `last
+video`.
+
+To visit this `last video` you can run the command
+`ie-last-video-find-readme` defined in
+[ie-last-video.el](./ie-last-video.el) , for instance by running:
+
+```
+M-x ie-last-video-find-readme
+```
+
+This command depends on:
+1. the variable `ie-last-video-main-dir` that store the path where
+   Inside Emacs videos are edited,
+2. the naming of the directory of each video:
+   - `inside-emacs-1` for Inside Emacs #1 video and,
+   - `inside-emacs-6-part-5` for Inside Emacs #6 (part 5) video.
+
 # License
 
 Project under MIT license
