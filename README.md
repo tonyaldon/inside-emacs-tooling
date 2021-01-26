@@ -23,9 +23,9 @@ file) to beautiful footage.  So far it involves 3 steps:
 3. generate `.kdenlive` files with the previous `.svg` files.
 
 The parsing part is done in
-[ie-story-parse](./ie-story/ie-story-parse.el),
+[ie-story-parse.el](./ie-story/ie-story-parse.el),
 and the generating part is done in
-[ie-story-generate](./ie-story/ie-story-generate.el).
+[ie-story-generate.el](./ie-story/ie-story-generate.el).
 
 Note that the generating part of `.kdenlive` files is not already done.
 
