@@ -38,7 +38,7 @@
 ;; to be readable
 ;; for the viewer
 ;;
-;; The descriptions belong to subsections (** scenes 1: scene title)
+;; The descriptions belong to subsections (** scene 1: scene title)
 ;; which belongs to the main section (* scenes).  Each paragraph of
 ;; the story must start in the line following (# description) line and
 ;; end up at the first empty line.
