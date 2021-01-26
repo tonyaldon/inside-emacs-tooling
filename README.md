@@ -9,7 +9,8 @@ video series.
 1. Automate boring and repetitive parts of making the videos,
 2. Drastically cut down the time to produce the videos,
 3. Trying to produce each video in less than 2 hours (it currently
-   takes me 8 to 10 hours)
+   takes me 8 to 10 hours [Inside Emacs #6 (part 5)](https://www.youtube.com/watch?v=w4wxGOijyZs)
+   / and more than 20 hours for the first one [Inside Emacs #1](https://www.youtube.com/watch?v=F1IXixEhQwk)).
 
 # Stories
 
@@ -94,13 +95,103 @@ So, the idea is to generate the `.kdenlive` files for each new videos
 with the common parts and settings.  And then, working with GUI
 `kdenlive` to end parts that can't be automated.
 
-[kdenlive.el](./kdenlive/kdenlive.el) implements `emacs` commands that
+[kdenlive.el](./kdenlive/kdenlive.el) implements `emacs` functions that
 can generate `.kdenlive` files.
 
 I know that `kdenlive` is already at version `20.12`, but `kdenlive.el`
 generate `.kdenlive` files compatible with the version `17.12.3`.
 See the top comments in the [kdenlive.el](./kdenlive/kdenlive.el)
 file for more details.
+
+## Usage
+
+### example 1
+
+Go to [kdenlive example-1](./kdenlive/examples/example-1/example-1.el)
+to see how `kdenlive-...` functions are put together to produce
+a simple `.kdenlive` file.
+
+### example 2
+
+You can find all we describe here in [kdenlive
+example-2](./kdenlive/examples/example-2/example-2.el) file.
+
+Our goal is to generate a `.kdenlive` project file named
+`kdenlive/3-images-2-folders-no-timeline.kdenlive` verifying those
+conditions:
+1. the kdenlive profile of the video is `HD 1080p 60 fps`,
+2. it contains the following `svg` images `image-in-folder-1.svg`,
+   `image-in-folder-2.svg`, `not-in-a-folder.svg`,
+3. and in GUI kdenlive:
+   - `image-in-folder-1.svg` belongs to `folder-1` folder,
+   - `image-in-folder-2.svg` belongs to `folder-2` folder,
+   - `not-in-a-folder.svg` belongs to any specific folders.
+
+To do so, we just need to use the `kdenlive-skeleton-with-images` and
+`kdenlive-write` functions defined in
+[kdenlive.el](./kdenlive/kdenlive.el).
+
+Assuming your `svg` images are in the subdirectory `r-images` (stands
+for raw images) and your code is in the file `example-2.el`, running
+the following commands in your terminal:
+
+```bash
+cd path/to/example-2/
+tree
+```
+
+you should see:
+
+```
+.
+├── example-2.el
+└── r-images
+    ├── image-in-folder-1.svg
+    ├── image-in-folder-2.svg
+    └── not-in-a-folder.svg
+```
+
+Now in `example-2.el`, copy/past the following code:
+
+```elisp
+(require 'kdenlive)
+
+(let* ((path (f-full "kdenlive/3-images-2-folders-no-timeline.kdenlive"))
+       (root (f-full "kdenlive"))
+       (folders '("folder-1" "folder-2"))
+       (images
+        `((300 ,(f-full "r-images/image-in-folder-1.svg") "folder-1")
+          (300 ,(f-full "r-images/image-in-folder-2.svg") "folder-2")
+          (300 ,(f-full "r-images/not-in-a-folder.svg") nil))))
+  (setq mlt (kdenlive-skeleton-with-images root folders images))
+  (unless (f-exists? (f-join default-directory "kdenlive"))
+    (f-mkdir "kdenlive"))
+  (kdenlive-write mlt path t))
+
+```
+
+Now switch to a buffer visiting `example-2.el` and evaluate the buffer
+with `eval-buffer`, for instance running:
+
+```
+M-x eval-buffer
+```
+
+This creates the desired `.kdenlive` project file.  Now you can
+open it inside `kdenlive` and edit the video with GUI kdenlive.
+
+In your terminal, if you run `tree`, you should see:
+
+```
+.
+├── example-2.el
+├── kdenlive
+│   └── 3-images-2-folders-no-timeline.kdenlive
+└── r-images
+    ├── image-in-folder-1.svg
+    ├── image-in-folder-2.svg
+    └── not-in-a-folder.svg
+```
 
 # License
 
