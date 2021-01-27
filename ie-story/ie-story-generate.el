@@ -81,10 +81,7 @@ INDEX is the apparition order of the description in the SCENE.
 
 The svg file generated is save in FOLDER with a unique name."
   (unless (f-exists? folder) (f-mkdir folder))
-  (let ((path (f-join folder
-                      (s-concat
-                       (s-join "-" `("description" ,scene ,(number-to-string index)))
-                       ".svg")))
+  (let ((path (ie-story-generate-description-path scene index folder))
         (svg (svg-create 1920 1080))
         (style "font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:96px;line-height:1.25;font-family:Ramabhadra;-inkscape-font-specification:'Ramabhadra Bold';letter-spacing:0px;word-spacing:0px;fill:#f0f0f0;fill-opacity:0.941176;stroke:none;stroke-width:0.264583")
         (lines-reversed (reverse lines))
