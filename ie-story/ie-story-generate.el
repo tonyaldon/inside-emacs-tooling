@@ -51,7 +51,7 @@ FOLDER is the parent of the file path returned.
          (base (s-join "-" `("description" ,scene ,tail))))
     (f-full (f-join folder (s-concat base ".svg")))))
 
-(defun ie-story-generate-scene-title-svg (scene-buffer-position folder)
+(defun ie-story-generate-description-scene-title-svg (scene-buffer-position folder)
   "Generate svg title scene of Inside Emacs at SCENE-BUFFER-POSITION.
 
 The svg file generated is save in FOLDER with a unique name."
@@ -119,7 +119,7 @@ See `ie-story-generate-all-descriptions-svg'."
 The files are saved in the subdirectory `ie-story-generate-images-dir'."
   (interactive)
   (--each (ie-story-parse-scenes)
-    (ie-story-generate-scene-title-svg
+    (ie-story-generate-description-scene-title-svg
      it ie-story-generate-images-dir)
     (ie-story-generate-descriptions-in-scene-svg
      it ie-story-generate-images-dir))
@@ -138,7 +138,7 @@ The files are saved in the subdirectory `ie-story-generate-images-dir'."
    )
  )
 
-(comment ; ie-story-generate-scene-title-svg
+(comment ; ie-story-generate-description-scene-title-svg
  (let ((default-directory (f-full "test"))
        (folder "r-images")
        (story
@@ -162,12 +162,13 @@ we handle only
 paragraph with 4 lines
 to be readable
 for the reader"))
+   (unless (f-exists? default-directory) (f-mkdir default-directory))
    (with-temp-buffer
      (insert story)
      (goto-line 7)
-     (ie-story-generate-scene-title-svg (point) folder)
+     (ie-story-generate-description-scene-title-svg (point) folder)
      (goto-line 12)
-     (ie-story-generate-scene-title-svg (point) folder)))
+     (ie-story-generate-description-scene-title-svg (point) folder)))
  )
 
 (comment ; ie-story-generate-description-svg
