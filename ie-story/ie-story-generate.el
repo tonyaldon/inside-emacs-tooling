@@ -37,6 +37,20 @@
 
 See `ie-story-generate-all-descriptions-svg'.")
 
+(defun ie-story-generate-description-path (scene index folder)
+  "Generate full path of a description of Inside Emacs.
+
+SCENE is the scene (kebab-case) of the scene the description
+belongs to.
+If INDEX non-nil, it is the apparition order of the description
+in the SCENE.  If INDEX is nil, the returned path is the full path
+corresponding to the svg title of the SCENE.
+FOLDER is the parent of the file path returned.
+"
+  (let* ((tail (or (and index (number-to-string index)) "title"))
+         (base (s-join "-" `("description" ,scene ,tail))))
+    (f-full (f-join folder (s-concat base ".svg")))))
+
 (defun ie-story-generate-scene-title-svg (scene-buffer-position folder)
   "Generate svg title scene of Inside Emacs at SCENE-BUFFER-POSITION.
 
@@ -115,6 +129,14 @@ The files are saved in the subdirectory `ie-story-generate-images-dir'."
 ;;; Comments
 
 ;;;; ie-story-generate
+
+(comment ; ie-story-generate-description-path
+ (let ((scene "a-scene")
+       (folder "r-images"))
+   (f-relative (ie-story-generate-description-path scene nil folder)) ; "r-images/description-a-scene-title.svg"
+   (f-relative (ie-story-generate-description-path scene 1 folder))   ; "r-images/description-a-scene-1.svg"
+   )
+ )
 
 (comment ; ie-story-generate-scene-title-svg
  (let ((default-directory (f-full "test"))
