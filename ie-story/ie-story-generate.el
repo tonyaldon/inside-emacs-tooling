@@ -164,17 +164,17 @@ The images used in \".kdenlive\" project are located in IMAGES-DIR."
      (kdenlive-skeleton-with-images root folders images) path t)
     ))
 
-;; (defun ie-story-generate-all-edited-scenes-kdenlive ()
-;;   "Generate all \".kdenlive\" edited scenes files of Inside Emacs
-;; for the current buffer.
-;;
-;; The files are saved in the subdirectory `ie-story-generate-kdenlive-dir'."
-;;   (interactive)
-;;   (--each (ie-story-parse-scenes)
-;;     (ie-story-generate-edited-scene-kdenlive
-;;      it ie-story-generate-kdenlive-dir))
-;;   (message "edited kdenlive files saved in %s"
-;;            ie-story-generate-kdenlive-dir))
+(defun ie-story-generate-all-edited-scenes-kdenlive ()
+  "Generate all \".kdenlive\" edited scenes files of Inside Emacs
+for the current buffer.
+
+The files are saved in the subdirectory `ie-story-generate-kdenlive-dir'."
+  (interactive)
+  (--each (ie-story-parse-scenes)
+    (ie-story-generate-edited-scene-kdenlive
+     it ie-story-generate-kdenlive-dir))
+  (message "edited kdenlive files saved in %s"
+           ie-story-generate-kdenlive-dir))
 
 ;;; Comments
 
@@ -328,6 +328,35 @@ for the reader"))
      (goto-line 12)
      (ie-story-generate-edited-scene-kdenlive (point))
      ))
+ )
+
+(comment ; ie-story-generate-edited-scene-kdenlive
+ (let ((default-directory (f-full "test"))
+       (story
+        "#+TITLE: Inside Emacs
+#+AUTHOR: Tony aldon
+
+* a heading
+* another heading
+* scenes
+** scene 0: intro
+# description
+a description splited
+into two lines
+
+** scene 1: First Scene
+# description
+A one line paragraph
+
+# description
+we handle only
+paragraph with 4 lines
+to be readable
+for the reader"))
+   (unless (f-exists? default-directory) (f-mkdir default-directory))
+   (with-temp-buffer
+     (insert story)
+     (ie-story-generate-all-edited-scenes-kdenlive)))
  )
 
 ;;;; emacs-lisp
