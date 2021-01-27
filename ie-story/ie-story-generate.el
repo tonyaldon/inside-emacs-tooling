@@ -56,20 +56,17 @@ FOLDER is the parent of the file path returned.
 
 The svg file generated is save in FOLDER with a unique name."
   (unless (f-exists? folder) (f-mkdir folder))
-  (let* ((title (ie-story-parse-scene-title scene-buffer-position))
-         (title-kebab-case (ie-story-parse-scene-title
-                            scene-buffer-position t))
-         (path (f-join folder
-                       (s-concat
-                        (s-join "-" `("description"
-                                      ,title-kebab-case
-                                      "title"))
-                        ".svg")))
+  (let* ((scene-title
+          (ie-story-parse-scene-title scene-buffer-position))
+         (scene-title-kebab-case
+          (ie-story-parse-scene-title scene-buffer-position t))
+         (path (ie-story-generate-description-path
+                scene-title-kebab-case nil folder))
          (svg (svg-create 1920 1080))
          (style "font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:96px;line-height:1.25;font-family:Ramabhadra;-inkscape-font-specification:'Ramabhadra Bold';letter-spacing:0px;word-spacing:0px;fill:#f0f0f0;fill-opacity:0.941176;stroke:none;stroke-width:0.264583")
          (x-start-line 90)
          (y-start-line 194))
-    (svg-text svg title
+    (svg-text svg scene-title
               :style style :x x-start-line :y y-start-line)
     (with-temp-buffer
       (svg-print svg)
