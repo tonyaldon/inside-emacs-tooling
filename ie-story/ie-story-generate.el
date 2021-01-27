@@ -120,9 +120,65 @@ The files are saved in the subdirectory `ie-story-generate-images-dir'."
   (message "svg description files saved in %s"
            ie-story-generate-images-dir))
 
+;;; Generate kdenlive files
+
+(require 'kdenlive)
+
+(defvar ie-story-generate-kdenlive-dir "kdenlive"
+  "Name of the subdirectory where the \".kdenlive\" are saved.
+
+See `ie-story-generate-all-edited-scenes-kdenlive'.")
+
+(defun ie-story-generate-edited-scene-kdenlive (scene-buffer-position &optional kdenlive-dir images-dir)
+  "Generate \".kdenlive\" edited scene file of Inside Emacs video
+for the scene at SCENE-BUFFER-POSITION in the current buffer.
+
+The \".kdenlive\" project is saved in KDENLIVE-DIR.
+The images used in \".kdenlive\" project are located in IMAGES-DIR."
+  (let* ((scene-name
+          (ie-story-parse-scene-title scene-buffer-position t))
+         (project-name (s-concat "edited-" scene-name ".kdenlive"))
+         (kdenlive-dir (or kdenlive-dir ie-story-generate-kdenlive-dir))
+         (images-dir (or images-dir ie-story-generate-images-dir))
+         (path (f-full (f-join kdenlive-dir project-name)))
+         (root (f-full kdenlive-dir))
+         (duration 300)
+         (folder-description "descriptions")
+         (folders `(,folder-description "helpers" "scenes"))
+         (number-of-descriptions
+          (length (ie-story-parse-descriptions-in-scene scene-buffer-position)))
+         (images
+          (cons
+           (kdenlive-image-in-folder
+            duration
+            (ie-story-generate-description-path scene-name nil images-dir)
+            folder-description)
+           (--map (kdenlive-image-in-folder
+                   duration
+                   (ie-story-generate-description-path scene-name it images-dir)
+                   folder-description)
+                  (number-sequence 1 number-of-descriptions)))))
+    (unless (f-exists? (f-join default-directory "kdenlive"))
+      (f-mkdir "kdenlive"))
+    (kdenlive-write
+     (kdenlive-skeleton-with-images root folders images) path t)
+    ))
+
+;; (defun ie-story-generate-all-edited-scenes-kdenlive ()
+;;   "Generate all \".kdenlive\" edited scenes files of Inside Emacs
+;; for the current buffer.
+;;
+;; The files are saved in the subdirectory `ie-story-generate-kdenlive-dir'."
+;;   (interactive)
+;;   (--each (ie-story-parse-scenes)
+;;     (ie-story-generate-edited-scene-kdenlive
+;;      it ie-story-generate-kdenlive-dir))
+;;   (message "edited kdenlive files saved in %s"
+;;            ie-story-generate-kdenlive-dir))
+
 ;;; Comments
 
-;;;; ie-story-generate
+;;;; Generate svg files
 
 (comment ; ie-story-generate-description-path
  (let ((scene "a-scene")
@@ -237,6 +293,41 @@ for the reader"))
    (with-temp-buffer
      (insert story)
      (call-interactively 'ie-story-generate-all-descriptions-svg)))
+ )
+
+;;;; Generate kdenlive files
+
+(comment ; ie-story-generate-descriptions-in-scene-svg
+ (let ((default-directory (f-full "test"))
+       (story
+        "#+TITLE: Inside Emacs
+#+AUTHOR: Tony aldon
+
+* a heading
+* another heading
+* scenes
+** scene 0: intro
+# description
+a description splited
+into two lines
+
+** scene 1: First Scene
+# description
+A one line paragraph
+
+# description
+we handle only
+paragraph with 4 lines
+to be readable
+for the reader"))
+   (unless (f-exists? default-directory) (f-mkdir default-directory))
+   (with-temp-buffer
+     (insert story)
+     (goto-line 7)
+     (ie-story-generate-edited-scene-kdenlive (point))
+     (goto-line 12)
+     (ie-story-generate-edited-scene-kdenlive (point))
+     ))
  )
 
 ;;;; emacs-lisp
