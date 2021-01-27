@@ -224,6 +224,7 @@ for the reader"))
 (comment ; ie-story-generate-description-svg
  (let ((default-directory (f-full "test"))
        (folder "r-images"))
+   (unless (f-exists? default-directory) (f-mkdir default-directory))
    (ie-story-generate-description-svg '("line 1") "my-scene" 1 folder)
    (ie-story-generate-description-svg '("line 1" "line 2")
                                       "my-scene" 2 folder)
