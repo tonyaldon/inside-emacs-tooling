@@ -352,6 +352,17 @@ PLAYLISTS is a list of list of the form (ID NAME AUDIO).
     acc (kdenlive-playlist (car it) (nth 1 it) (nth 2 it)))
    mlt playlists))
 
+(defun kdenlive-image-in-folder (duration resource in-folder)
+  "Return the list '(duration image in-folder).
+
+Descriptive helper aimed to used to build \"images\" list argument
+of `kdenlive-skeleton-with-images' function.
+DURATION is the number of frames the image last,
+RESOURCE is the full path of the image,
+FOLDER is a folder name also in FOLDERS the image belong
+to inside GUI kdenlive."
+  (list duration resource in-folder))
+
 (defun kdenlive-folder-id (folder folders)
   "Return the id of FOLDER based on its position in FOLDERS."
   (when folder
@@ -515,6 +526,15 @@ IMAGES is a list of (DURATION RESOURCE FOLDER) where:
  (kdenlive-folder-id nil '("folder-1" "folder-2")) ; 2
  (--annotate (kdenlive-folder-id it '("folder-1" "folder-2"))
              '("folder-1" "folder-2")) ; ((1 . "folder-1") (2 . "folder-2"))
+ )
+
+(comment ; kdenlive-image-in-folder
+ (kdenlive-image-in-folder 300
+                           (f-full "test/image-in-folder-1.svg")
+                           "folder-1") ; '(300 "/home/tony/work/settings/emacs.d/.emacs.d/packages/inside-emacs-tooling/kdenlive/test/image-in-folder-1.svg" "folder-1")
+ (kdenlive-image-in-folder 300
+                           (f-full "test/not-in-a-folder.svg")
+                           nil) ; '(300 "/home/tony/work/settings/emacs.d/.emacs.d/packages/inside-emacs-tooling/kdenlive/test/not-in-a-folder.svg" nil)
  )
 
 (comment ; kdenlive-skeleton-with-images, kdenlive-write
