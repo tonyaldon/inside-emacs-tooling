@@ -91,19 +91,13 @@ The svg file generated is save in FOLDER with a unique name."
 
 The svg files generated are saved in FOLDER.
 See `ie-story-generate-all-descriptions-svg'."
-  (save-excursion
-    (goto-char scene-buffer-position)
-    (let* ((bound (ie-story-parse-next-scene))
-           (scene-name (ie-story-parse-scene-title scene-buffer-position t))
-           (description-index 1)
-           description-lines)
-      (while (ie-story-parse-goto-next-description bound)
-        (setq description-lines (ie-story-parse-description (point)))
-        (ie-story-generate-description-svg description-lines
-                                           scene-name
-                                           description-index
-                                           folder)
-        (setq description-index (1+ description-index))))))
+  (let ((scene-name
+         (ie-story-parse-scene-title scene-buffer-position t)))
+    (--each-indexed (ie-story-parse-descriptions-in-scene
+                     scene-buffer-position)
+      (ie-story-generate-description-svg
+       (ie-story-parse-description it)
+       scene-name (1+ it-index) folder))))
 
 (defun ie-story-generate-all-descriptions-svg ()
   "Generate all svg descriptions of Inside Emacs for the current buffer.
@@ -119,6 +113,8 @@ The files are saved in the subdirectory `ie-story-generate-images-dir'."
            ie-story-generate-images-dir))
 
 ;;; Comments
+
+;;;; ie-story-generate
 
 (comment ; ie-story-generate-scene-title-svg
  (let ((default-directory (f-full "test"))
@@ -189,6 +185,7 @@ we handle only
 paragraph with 4 lines
 to be readable
 for the reader"))
+   (unless (f-exists? default-directory) (f-mkdir default-directory))
    (with-temp-buffer
      (insert story)
      (goto-line 7)
@@ -223,6 +220,12 @@ for the reader"))
    (with-temp-buffer
      (insert story)
      (call-interactively 'ie-story-generate-all-descriptions-svg)))
+ )
+
+;;;; emacs-lisp
+
+(comment ; --each-indexed
+ (let (l) (--each-indexed '(a b c) (push (list it it-index) l)) l) ; '((c 2) (b 1) (a 0))
  )
 
 ;;; Footer
