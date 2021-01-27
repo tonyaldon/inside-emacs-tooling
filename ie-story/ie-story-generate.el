@@ -129,6 +129,28 @@ The files are saved in the subdirectory `ie-story-generate-images-dir'."
 
 See `ie-story-generate-all-edited-scenes-kdenlive'.")
 
+(defun ie-story-generate-description-images-for-kdenlive
+    (scene-buffer-position
+     duration
+     scene-name
+     folder-descriptions
+     images-dir)
+  "Helper intended to be used in `ie-story-generate-edited-scene-kdenlive'."
+  (let ((indexes (number-sequence
+                  1 (length
+                     (ie-story-parse-descriptions-in-scene
+                      scene-buffer-position)))))
+    (cons
+     (kdenlive-image-in-folder
+      duration
+      (ie-story-generate-description-path scene-name nil images-dir)
+      folder-descriptions)
+     (--map (kdenlive-image-in-folder
+             duration
+             (ie-story-generate-description-path scene-name it images-dir)
+             folder-descriptions)
+            indexes))))
+
 (defun ie-story-generate-edited-scene-kdenlive (scene-buffer-position &optional kdenlive-dir images-dir)
   "Generate \".kdenlive\" edited scene file of Inside Emacs video
 for the scene at SCENE-BUFFER-POSITION in the current buffer.
@@ -297,6 +319,41 @@ for the reader"))
  )
 
 ;;;; Generate kdenlive files
+
+(comment ; ie-story-generate-description-images-for-kdenlive
+ (let ((default-directory (f-full "test"))
+       (story
+        "#+TITLE: Inside Emacs
+#+AUTHOR: Tony aldon
+
+* a heading
+* another heading
+* scenes
+** scene 0: intro
+# description
+a description splited
+into two lines
+
+** scene 1: First Scene
+# description
+A one line paragraph
+
+# description
+we handle only
+paragraph with 4 lines
+to be readable
+for the reader"))
+   (unless (f-exists? default-directory) (f-mkdir default-directory))
+   (with-temp-buffer
+     (insert story)
+     (goto-line 7)
+     (ie-story-generate-description-images-for-kdenlive
+      (point) 300 "scene-name" "descriptions" "r-images")
+     (goto-line 12)
+     (ie-story-generate-description-images-for-kdenlive
+      (point) 300 "scene-name" "descriptions" "r-images")
+     ))
+ )
 
 (comment ; ie-story-generate-descriptions-in-scene-svg
  (let ((default-directory (f-full "test"))
