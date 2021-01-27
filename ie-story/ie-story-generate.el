@@ -157,34 +157,23 @@ for the scene at SCENE-BUFFER-POSITION in the current buffer.
 
 The \".kdenlive\" project is saved in KDENLIVE-DIR.
 The images used in \".kdenlive\" project are located in IMAGES-DIR."
-  (let* ((scene-name
+  (let* ((kdenlive-dir (or kdenlive-dir ie-story-generate-kdenlive-dir))
+         (images-dir (or images-dir ie-story-generate-images-dir))
+         (scene-name
           (ie-story-parse-scene-title scene-buffer-position t))
          (project-name (s-concat "edited-" scene-name ".kdenlive"))
-         (kdenlive-dir (or kdenlive-dir ie-story-generate-kdenlive-dir))
-         (images-dir (or images-dir ie-story-generate-images-dir))
          (path (f-full (f-join kdenlive-dir project-name)))
          (root (f-full kdenlive-dir))
          (duration 300)
-         (folder-description "descriptions")
-         (folders `(,folder-description "helpers" "scenes"))
-         (number-of-descriptions
-          (length (ie-story-parse-descriptions-in-scene scene-buffer-position)))
+         (folder-descriptions "descriptions")
+         (folders `(,folder-descriptions "helpers" "scenes"))
          (images
-          (cons
-           (kdenlive-image-in-folder
-            duration
-            (ie-story-generate-description-path scene-name nil images-dir)
-            folder-description)
-           (--map (kdenlive-image-in-folder
-                   duration
-                   (ie-story-generate-description-path scene-name it images-dir)
-                   folder-description)
-                  (number-sequence 1 number-of-descriptions)))))
+          (ie-story-generate-description-images-for-kdenlive
+           scene-buffer-position duration scene-name folder-descriptions images-dir)))
     (unless (f-exists? (f-join default-directory "kdenlive"))
       (f-mkdir "kdenlive"))
     (kdenlive-write
-     (kdenlive-skeleton-with-images root folders images) path t)
-    ))
+     (kdenlive-skeleton-with-images root folders images) path t)))
 
 (defun ie-story-generate-all-edited-scenes-kdenlive ()
   "Generate all \".kdenlive\" edited scenes files of Inside Emacs
@@ -355,7 +344,7 @@ for the reader"))
      ))
  )
 
-(comment ; ie-story-generate-descriptions-in-scene-svg
+(comment ; ie-story-generate-edited-scene-kdenlive
  (let ((default-directory (f-full "test"))
        (story
         "#+TITLE: Inside Emacs
@@ -388,7 +377,7 @@ for the reader"))
      ))
  )
 
-(comment ; ie-story-generate-edited-scene-kdenlive
+(comment ; ie-story-generate-all-edited-scenes-kdenlive
  (let ((default-directory (f-full "test"))
        (story
         "#+TITLE: Inside Emacs
