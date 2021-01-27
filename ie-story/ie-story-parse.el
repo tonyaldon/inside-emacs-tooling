@@ -103,6 +103,18 @@ If KEBAB-CASE is t, return the title of the scene but in kebab-case."
   (when-let ((next-scene (ie-story-parse-next-scene)))
     (goto-char next-scene)))
 
+(defun ie-story-parse-descriptions-in-scene (scene-buffer-position)
+  "Return the list of buffer position of the descriptions in the
+scene SCENE-BUFFER-POSITION."
+  (save-excursion
+    (goto-char scene-buffer-position)
+    (let ((bound (ie-story-parse-next-scene))
+          description)
+      (while (ie-story-parse-goto-next-description bound)
+        (push (point) description))
+      (reverse description))))
+
+
 (defun ie-story-parse-scenes ()
   "Return the list of buffer position of the scenes in the current buffer."
   (save-excursion
@@ -266,6 +278,42 @@ for the reader"))
      (equal (line-number-at-pos) 7))) ; t
  )
 
+(comment ; ie-story-parse-descriptions-in-scene
+ (let ((story
+        "#+TITLE: Inside Emacs
+#+AUTHOR: Tony aldon
+
+* a heading
+* another heading
+* scenes
+** scene 0: intro
+# description
+a description splited
+into two lines
+
+** scene 1: First Scene
+# description
+A one line paragraph
+
+# description
+we handle only
+paragraph with 4 lines
+to be readable
+for the reader"))
+   (with-temp-buffer
+     (insert story)
+     (let ((scene-0 (progn (goto-line 7) (point)))
+           (scene-0-desc-1 (progn (goto-line 9) (point)))
+           (scene-1 (progn (goto-line 12) (point)))
+           (scene-1-desc-1 (progn (goto-line 14) (point)))
+           (scene-1-desc-2 (progn (goto-line 17) (point))))
+       (equal (ie-story-parse-descriptions-in-scene scene-0)
+              (list scene-0-desc-1))
+       (equal (ie-story-parse-descriptions-in-scene scene-1)
+              (list scene-1-desc-1 scene-1-desc-2))
+       )))
+ )
+
 (comment ; ie-story-parse-scenes
  (let ((story
         "#+TITLE: Inside Emacs
@@ -314,6 +362,15 @@ for the reader"))
  (reverse test-list) ; '(c b a)
  (pop test-list) ; a
  test-list ; '(b c)
+ )
+
+(comment ; push, nconc
+ (let ((l))
+   (push 1 l)
+   (push 2 l)) ; '(2 1)
+ (let ((l))
+   (setq l (nconc l '(1)))
+   (setq l (nconc l '(2))))
  )
 
 ;;; Footer
