@@ -51,4 +51,4 @@ INSIDE-EMACS-DIR is the directory of the video Inside Emacs."
 
 ;;; Footer
 
-(provide 'inside-emacs)
+(provide 'ie-last-video)
