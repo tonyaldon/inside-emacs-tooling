@@ -1,0 +1,20 @@
+#+TITLE: Inside Emacs
+#+AUTHOR: Tony aldon
+
+* a heading
+* another heading
+* scenes
+** scene 0: intro
+# description
+a description splited
+into two lines
+
+** scene 1: First Scene
+# description
+A one line paragraph
+
+# description
+we handle only
+paragraph with 4 lines
+to be readable
+for the reader

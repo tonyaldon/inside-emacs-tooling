@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mlt root="/home/tony/work/settings/emacs.d/.emacs.d/packages/inside-emacs-tooling/ie-story/examples/example-3/kdenlive" title="Anonymous Submission" version="6.6.0" producer="main bin" LC_NUMERIC="en_US.UTF-8">
+  <profile width="1920" frame_rate_den="1" height="1080" display_aspect_num="16" display_aspect_den="9" frame_rate_num="60" colorspace="709" sample_aspect_den="1" description="HD 1080p 60 fps" progressive="1" sample_aspect_num="1" />
+  <producer id="1" out="299" in="0">
+    <property name="eof">pause</property>
+    <property name="ttl">25</property>
+    <property name="aspect_ratio">1</property>
+    <property name="progressive">1</property>
+    <property name="seekable">1</property>
+    <property name="loop">1</property>
+    <property name="mlt_service">pixbuf</property>
+    <property name="meta.media.width">1920</property>
+    <property name="meta.media.height">1080</property>
+    <property name="resource">/home/tony/work/settings/emacs.d/.emacs.d/packages/inside-emacs-tooling/ie-story/examples/example-3/r-images/description-intro-title.svg</property>
+    <property name="length">300</property>
+    <property name="kdenlive:duration">300</property>
+    <property name="kdenlive:folderid">1</property>
+  </producer>
+  <producer id="2" out="299" in="0">
+    <property name="eof">pause</property>
+    <property name="ttl">25</property>
+    <property name="aspect_ratio">1</property>
+    <property name="progressive">1</property>
+    <property name="seekable">1</property>
+    <property name="loop">1</property>
+    <property name="mlt_service">pixbuf</property>
+    <property name="meta.media.width">1920</property>
+    <property name="meta.media.height">1080</property>
+    <property name="resource">/home/tony/work/settings/emacs.d/.emacs.d/packages/inside-emacs-tooling/ie-story/examples/example-3/r-images/description-intro-1.svg</property>
+    <property name="length">300</property>
+    <property name="kdenlive:duration">300</property>
+    <property name="kdenlive:folderid">1</property>
+  </producer>
+  <playlist id="main bin">
+    <property name="kdenlive:folder.-1.1">descriptions</property>
+    <property name="kdenlive:folder.-1.2">helpers</property>
+    <property name="kdenlive:folder.-1.3">scenes</property>
+    <entry producer="1" out="299" in="0" />
+    <entry producer="2" out="299" in="0" />
+    <property name="kdenlive:docproperties.audiotargettrack">2</property>
+    <property name="kdenlive:docproperties.decimalPoint">.</property>
+    <property name="kdenlive:docproperties.disablepreview">0</property>
+    <property name="kdenlive:docproperties.enableproxy">0</property>
+    <property name="kdenlive:docproperties.generateimageproxy">0</property>
+    <property name="kdenlive:docproperties.generateproxy">0</property>
+    <property name="kdenlive:docproperties.kdenliveversion">17.12.3</property>
+    <property name="kdenlive:docproperties.position">0</property>
+    <property name="kdenlive:docproperties.profile">atsc_1080p_60</property>
+    <property name="kdenlive:docproperties.proxyextension">mkv</property>
+    <property name="kdenlive:docproperties.proxyimageminsize">2000</property>
+    <property name="kdenlive:docproperties.proxyminsize">1000</property>
+    <property name="kdenlive:docproperties.proxyparams">-vf yadif,scale=960:-2 -qscale 3 -vcodec mjpeg -acodec pcm_s16le</property>
+    <property name="kdenlive:docproperties.version">0.96</property>
+    <property name="kdenlive:docproperties.verticalzoom">1</property>
+    <property name="kdenlive:docproperties.videotargettrack">3</property>
+    <property name="kdenlive:docproperties.zonein">0</property>
+    <property name="kdenlive:docproperties.zoneout">100</property>
+    <property name="kdenlive:docproperties.zoom">7</property>
+    <property name="xml_retain">1</property>
+  </playlist>
+  <producer id="black" out="500" in="0">
+    <property name="length">15000</property>
+    <property name="eof">pause</property>
+    <property name="resource">black</property>
+    <property name="aspect_ratio">0</property>
+    <property name="mlt_service">colour</property>
+    <property name="set.test_audio">0</property>
+  </producer>
+  <playlist id="black_track">
+    <entry producer="black" out="0" in="0" />
+  </playlist>
+  <playlist id="playlist1">
+    <property name="kdenlive:track_name">Audio 2</property>
+    <property name="kdenlive:audio_track">1</property>
+  </playlist>
+  <playlist id="playlist2">
+    <property name="kdenlive:track_name">Audio 1</property>
+    <property name="kdenlive:audio_track">1</property>
+  </playlist>
+  <playlist id="playlist3">
+    <property name="kdenlive:track_name">Video 1</property>
+  </playlist>
+  <playlist id="playlist4">
+    <property name="kdenlive:track_name">Video 2</property>
+  </playlist>
+  <playlist id="playlist5">
+    <property name="kdenlive:track_name">Video 3</property>
+  </playlist>
+  <tractor id="maintractor" title="Anonymous Submission" global_feed="1" out="0" in="0">
+    <track producer="black_track" />
+    <track producer="playlist1" hide="video" />
+    <track producer="playlist2" hide="video" />
+    <track producer="playlist3" />
+    <track producer="playlist4" />
+    <track producer="playlist5" />
+  </tractor>
+</mlt>
