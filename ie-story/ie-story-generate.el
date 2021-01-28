@@ -189,6 +189,17 @@ The files are saved in the subdirectory `ie-story-generate-kdenlive-dir'."
   (message "edited kdenlive files saved in %s"
            ie-story-generate-kdenlive-dir))
 
+;;; Generate both svg and kdenlive files
+
+(defun ie-story-generate-all ()
+  "Generate svg and kdenlive files of an Inside Emacs video.
+
+Call `ie-story-generate-all-descriptions-svg' and
+`ie-story-generate-all-edited-scenes-kdenlive'."
+  (interactive)
+  (ie-story-generate-all-descriptions-svg)
+  (ie-story-generate-all-edited-scenes-kdenlive))
+
 ;;; Comments
 
 ;;;; Generate svg files
@@ -406,6 +417,37 @@ for the reader"))
    (with-temp-buffer
      (insert story)
      (ie-story-generate-all-edited-scenes-kdenlive)))
+ )
+
+;;;; Generate both svg and kdenlive files
+
+(comment ; ie-story-generate-all
+ (let ((default-directory (f-full "test"))
+       (story
+        "#+TITLE: Inside Emacs
+#+AUTHOR: Tony aldon
+
+* a heading
+* another heading
+* scenes
+** scene 0: intro
+# description
+a description splited
+into two lines
+
+** scene 1: First Scene
+# description
+A one line paragraph
+
+# description
+we handle only
+paragraph with 4 lines
+to be readable
+for the reader"))
+   (unless (f-exists? default-directory) (f-mkdir default-directory))
+   (with-temp-buffer
+     (insert story)
+     (ie-story-generate-all)))
  )
 
 ;;;; emacs-lisp
