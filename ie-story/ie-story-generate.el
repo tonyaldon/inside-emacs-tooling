@@ -121,6 +121,7 @@ See `ie-story-generate-all-descriptions-svg'."
 
 The files are saved in the subdirectory `ie-story-generate-images-dir'."
   (interactive)
+  (org-show-all)
   (--each (ie-story-parse-scenes)
     (ie-story-generate-description-scene-title-svg
      it ie-story-generate-images-dir)
@@ -183,6 +184,7 @@ for the current buffer.
 
 The files are saved in the subdirectory `ie-story-generate-kdenlive-dir'."
   (interactive)
+  (org-show-all)
   (--each (ie-story-parse-scenes)
     (ie-story-generate-edited-scene-kdenlive
      it ie-story-generate-kdenlive-dir))
