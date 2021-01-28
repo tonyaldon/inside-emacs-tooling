@@ -28,14 +28,23 @@
 (require 'dash)
 (require 'f)
 (require 'ie-story-parse)
+(require 'kdenlive)
+(require 's)
 (require 'svg)
 
-;;; Generate svg files
+;;; Global variables
 
 (defvar ie-story-generate-images-dir "r-images"
   "Name of the subdirectory where the svg images are saved.
 
 See `ie-story-generate-all-descriptions-svg'.")
+
+(defvar ie-story-generate-kdenlive-dir "kdenlive"
+  "Name of the subdirectory where the \".kdenlive\" are saved.
+
+See `ie-story-generate-all-edited-scenes-kdenlive'.")
+
+;;; Generate svg files
 
 (defun ie-story-generate-description-path (scene index folder)
   "Generate full path of a description of Inside Emacs.
@@ -121,13 +130,6 @@ The files are saved in the subdirectory `ie-story-generate-images-dir'."
            ie-story-generate-images-dir))
 
 ;;; Generate kdenlive files
-
-(require 'kdenlive)
-
-(defvar ie-story-generate-kdenlive-dir "kdenlive"
-  "Name of the subdirectory where the \".kdenlive\" are saved.
-
-See `ie-story-generate-all-edited-scenes-kdenlive'.")
 
 (defun ie-story-generate-description-images-for-kdenlive
     (scene-buffer-position
