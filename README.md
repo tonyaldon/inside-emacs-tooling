@@ -27,8 +27,6 @@ The parsing part is done in
 and the generating part is done in
 [ie-story-generate.el](./ie-story/ie-story-generate.el).
 
-Note that the generating part of `.kdenlive` files is not already done.
-
 ## Formated story
 
 The stories of Inside Emacs videos are written following
