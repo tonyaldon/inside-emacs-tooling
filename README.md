@@ -61,6 +61,8 @@ The Inside Emacs stories must follow the following rules:
 
 ## Usage
 
+### Generate svg files from a story
+
 To generate the `.svg` files corresponding to a story written
 following the formated text described above, inside emacs, in the same
 buffer of the story is written, run the command
@@ -70,8 +72,10 @@ buffer of the story is written, run the command
 M-x ie-story-generate-all-descriptions-svg
 ```
 
-The `.svg` files are saved in the subdirectory `r-images` relative to
-the default directory your story is saved.
+The `.svg` files are saved in the subdirectory,
+defined by `ie-story-generate-images-dir` variable (which is by
+default `"r-images"`), relative to the `default-directory` your story
+is saved in.
 
 Play with
 [ie-story-example-1](./ie-story/examples/example-1/ie-story-example-1.org)
