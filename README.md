@@ -99,6 +99,31 @@ Play with
 [ie-story-example-2](./ie-story/examples/example-2/ie-story-example-2.org)
 to see how `ie-story-generate-all-edited-scenes-kdenlive` behaves.
 
+### Generate both svg and kdenlive from a story
+
+To generate the both `.svg` and `.kdenlive` files corresponding a story written
+following the formated text described above, inside emacs, in the same
+buffer of the story is written, run the command
+`ie-story-generate-all`, for instance like this:
+
+```
+M-x ie-story-generate-all
+```
+
+The `.svg` files are saved in the subdirectory,
+defined by `ie-story-generate-images-dir` variable (which is by
+default `"r-images"`), relative to the `default-directory` your story
+is saved in.
+
+The `.kdenlive` files are saved in the subdirectory,
+defined by `ie-story-generate-kdenlive-dir` variable (which is by
+default `"kdenlive"`), relative to the `default-directory` your story
+is saved in.
+
+Play with
+[ie-story-example-3](./ie-story/examples/example-3/ie-story-example-3.org)
+to see how `ie-story-generate-all` behaves.
+
 # Kdenlive
 
 I'm using [kdenlive](https://kdenlive.org/en/) to edit Inside Emacs
